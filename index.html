@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Montage Neuroscience</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d1117; overflow: hidden; }
+  canvas { display: block; position: absolute; top: 0; left: 0; touch-action: none; }
+  #overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    pointer-events: none; z-index: 1;
+  }
+  #overlay h1 {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+  }
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    pointer-events: auto;
+  }
+  .contact-links a {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.45);
+    text-decoration: none;
+    background: rgba(13, 17, 23, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 8px 20px;
+    border-radius: 4px;
+    transition: color 0.3s, border-color 0.3s;
+    cursor: pointer;
+  }
+  .contact-links a:hover {
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  #stats {
+    position: absolute; bottom: 8px; left: 8px; z-index: 2;
+    font-family: 'SF Mono', 'Consolas', monospace; font-size: 11px;
+    color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.45);
+    padding: 6px 10px; border-radius: 4px; line-height: 1.5;
+    pointer-events: none; display: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="overlay">
+  <h1>Montage<br>Neuroscience</h1>
+  <div class="contact-links">
+    <a id="email-link" href="#">Contact</a>
+  </div>
+</div>
+<div id="stats"></div>
+<script>
+document.getElementById('email-link').addEventListener('click', function reveal(e) {
+  e.preventDefault();
+  var el = e.currentTarget;
+  var addr = atob('ZXJpY0Btb250YWdlbmV1cm9zY2llbmNlLmNvbQ==');
+  el.textContent = addr;
+  el.href = 'mailto:' + addr;
+  el.removeEventListener('click', reveal);
+});
+</script>
+<script>
+'use strict';
+
+/*
+ * ══════════════════════════════════════════════════════════════════
+ *  Neural Network Landing Page — Tuning Guide
+ * ══════════════════════════════════════════════════════════════════
+ *
+ *  SPECTRUM (12 RGB triplets)
+ *    Spectral palette — each cluster gets its own hue, evenly spaced
+ *    around the color wheel (HSL). Pulses, glows, edges, and static
+ *    nodes all carry their cluster's color.
+ *
+ *  BG ('#0d1117')
+ *    Background color. Dark values work best for contrast.
+ *
+ *  NODE_SCALE (0.15)
+ *    Multiplied by sqrt(screen area in px) to get node count.
+ *    Square-root scaling keeps small screens dense enough to look
+ *    like a network while preventing large screens from overloading.
+ *    0.10 = sparse, 0.20 = dense. Min node count is 40.
+ *
+ *  NEIGHBORS (7)
+ *    Intra-cluster connections per node: (NEIGHBORS-1) nearest neighbors
+ *    within the same cluster. Edges are invisible until a pulse fires
+ *    along them, then fade out over EDGE_DECAY ms.
+ *    Higher = denser web, more cascade branching, heavier on CPU.
+ *
+ *  LONG_RANGE_P (0.20)
+ *    Probability that a node gets one inter-cluster edge (to the nearest
+ *    node in a different cluster). At 0.20, ~20% of nodes bridge clusters.
+ *    Higher = more cross-cluster cascades. 0 = isolated clusters. 1 = old behavior.
+ *
+ *  THRESHOLD (0.9)
+ *    Membrane potential needed to fire a node. Each incoming pulse
+ *    adds the edge weight (random 0-1) to the target's membrane.
+ *    Lower = cascades spread further (0.5 = explosive).
+ *    Higher = cascades die faster (1.0 = only convergence fires).
+ *    Each node has 2 guaranteed edges set to THRESHOLD+0.01, so
+ *    at least one outgoing path always fires.
+ *
+ *  DELAY_PPS (300)
+ *    Pulse travel speed in pixels per second. Each pulse's actual
+ *    travel time = (edge distance in px / DELAY_PPS) × random jitter
+ *    (0.8–1.2). Short edges fire fast, long edges take longer.
+ *    Higher = faster propagation. Lower = slower, more visible dots.
+ *
+ *  REFRACTORY (500)
+ *    Milliseconds a node is unresponsive after firing.
+ *    Prevents instant re-firing and limits cascade loops.
+ *    Lower = nodes recover faster, cascades can revisit sooner.
+ *
+ *  CASCADE_LIFE (4000)
+ *    Hard time limit (ms) for any single cascade chain.
+ *    After this, no new pulses are scheduled from that cascade.
+ *    Controls max duration of a single firing event.
+ *
+ *  CASCADE_FADE (2000)
+ *    Duration (ms) over which a cascade's visuals (traveling pulses
+ *    and node glows) fade to transparent after hitting CASCADE_LIFE.
+ *    Prevents abrupt disappearance of long-running cascades.
+ *
+ *  SPONTANEOUS (1000)
+ *    Milliseconds between random auto-fires from edge nodes.
+ *    Lower = more frequent activity. Higher = calmer network.
+ *
+ *  INTRO_WAVE (2500)
+ *    Duration (ms) of the bottom-to-top node reveal on page load.
+ *    Longer = slower, more dramatic entrance.
+ *
+ *  INTRO_FADE (200)
+ *    Duration (ms) for each node to fade in during the intro.
+ *
+ *  EDGE_DECAY (3000)
+ *    Milliseconds for a fired edge to fade from visible to invisible.
+ *    Edges are only drawn when recently fired — the network topology
+ *    is revealed organically by cascading activity.
+ *
+ *  GLOW_DURATION (350)
+ *    How long (ms) the radial glow persists after a node fires.
+ *    The glow follows a fast-rise/exponential-decay waveform.
+ *
+ *  FOV (500)
+ *    Perspective focal length in pixels. Larger = less perspective
+ *    distortion (flatter). Smaller = more dramatic depth effect.
+ *
+ *  DRAG_SENSITIVITY (0.005)
+ *    Radians of rotation per pixel of mouse/touch drag.
+ *    Higher = faster rotation for the same drag distance.
+ *
+ * ══════════════════════════════════════════════════════════════════
+ */
+
+/* ── Constants ── */
+const BG           = '#0d1117';
+const NODE_SCALE   = 0.20;
+const NEIGHBORS    = 7;
+const THRESHOLD    = 0.6;
+const DELAY_PPS    = 100;   // pulse speed: pixels per second
+const REFRACTORY   = 500;
+const CASCADE_LIFE = 4000;
+const CASCADE_FADE = 4000;
+const SPONTANEOUS  = 1000;
+const INTRO_WAVE   = 1000;
+const INTRO_FADE   = 100;
+const EDGE_DECAY   = 30000;
+const LONG_RANGE_P = 0.30;
+
+/* ── 3D / Rotation ── */
+let   fov              = 500;   // perspective focal length, set in init()
+const DRAG_SENSITIVITY = 0.005; // radians per pixel dragged
+
+/* ── Spectral palette — 12 hues evenly spaced ── */
+function hslToRgb(h, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const m = l - c / 2;
+  let r, g, b;
+  if (h < 60)       { r = c; g = x; b = 0; }
+  else if (h < 120) { r = x; g = c; b = 0; }
+  else if (h < 180) { r = 0; g = c; b = x; }
+  else if (h < 240) { r = 0; g = x; b = c; }
+  else if (h < 300) { r = x; g = 0; b = c; }
+  else              { r = c; g = 0; b = x; }
+  return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+}
+const SPECTRUM = [];
+for (let i = 0; i < 12; i++) SPECTRUM.push(hslToRgb(i * 30, 0.85, 0.6));
+
+/* ── Precompute action-potential waveform envelope (30 samples) ── */
+const WAVEFORM_LEN = 30;
+const WAVEFORM = new Float32Array(WAVEFORM_LEN);
+const GLOW_DURATION = 350; // ms total for the glow animation
+{
+  const riseEnd = 4; // fast rise over first 5 samples (indices 0-4)
+  for (let i = 0; i < WAVEFORM_LEN; i++) {
+    if (i <= riseEnd) {
+      WAVEFORM[i] = i / riseEnd; // linear rise to 1.0
+    } else {
+      // exponential decay from 1.0
+      const t = (i - riseEnd) / (WAVEFORM_LEN - 1 - riseEnd);
+      WAVEFORM[i] = Math.exp(-4 * t);
+    }
+  }
+}
+
+/* ── Min-Heap ── */
+class MinHeap {
+  constructor() { this.data = []; }
+  get size() { return this.data.length; }
+  push(e) {
+    this.data.push(e);
+    this._up(this.data.length - 1);
+  }
+  peek() { return this.data[0]; }
+  pop() {
+    const top = this.data[0];
+    const last = this.data.pop();
+    if (this.data.length > 0) { this.data[0] = last; this._down(0); }
+    return top;
+  }
+  _up(i) {
+    const d = this.data;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (d[i].scheduledTime >= d[p].scheduledTime) break;
+      [d[i], d[p]] = [d[p], d[i]];
+      i = p;
+    }
+  }
+  _down(i) {
+    const d = this.data, n = d.length;
+    while (true) {
+      let s = i, l = 2 * i + 1, r = l + 1;
+      if (l < n && d[l].scheduledTime < d[s].scheduledTime) s = l;
+      if (r < n && d[r].scheduledTime < d[s].scheduledTime) s = r;
+      if (s === i) break;
+      [d[i], d[s]] = [d[s], d[i]];
+      i = s;
+    }
+  }
+}
+
+/* ── State ── */
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let offscreen, offCtx;
+let nodes, adj, edgeNodes;
+let nodeCount, maxPulses;
+let cluster, clusterColor;
+let membrane, refractoryUntil, fireTime, fireBirth;
+let heap, inFlight, activePulseCount;
+let nextSpontaneous;
+let resizeTimer = 0;
+let introStart, introComplete;
+let revealAt;
+
+/* 3D rotation state */
+let rotMat = new Float64Array([1,0,0, 0,1,0, 0,0,1]); // 3x3 identity
+let isDragging = false, isRotating = false;
+let dragLastX = 0, dragLastY = 0;
+let pointerStartX = 0, pointerStartY = 0;
+let sphereRadius;
+
+/* Stats overlay state */
+const statsEl = document.getElementById('stats');
+const frameTimes = new Float64Array(60);
+let frameIdx = 0, frameFilled = 0, lastStatsUpdate = 0;
+
+/* ── 3D Projection ── */
+function projectAll() {
+  const cx = canvas.width / 2, cy = canvas.height / 2;
+  const m = rotMat;
+  for (let i = 0; i < nodeCount; i++) {
+    const n = nodes[i];
+    // Apply rotation matrix
+    const rx = m[0]*n.x + m[1]*n.y + m[2]*n.z;
+    const ry = m[3]*n.x + m[4]*n.y + m[5]*n.z;
+    const rz = m[6]*n.x + m[7]*n.y + m[8]*n.z;
+    // Perspective projection
+    const scale = fov / (fov + rz);
+    n.px = cx + rx * scale;
+    n.py = cy + ry * scale;
+    n.ps = scale;
+  }
+}
+
+function applyRotation(dx, dy) {
+  // Build incremental rotation: Ry(dx) * Rx(dy)
+  const ax = -dy * DRAG_SENSITIVITY;
+  const ay =  dx * DRAG_SENSITIVITY;
+  const cx = Math.cos(ax), sx = Math.sin(ax);
+  const cy = Math.cos(ay), sy = Math.sin(ay);
+  // Combined Ry * Rx
+  const r = [
+     cy,     sx*sy,  cx*sy,
+     0,      cx,    -sx,
+    -sy,     sx*cy,  cx*cy
+  ];
+  // Premultiply: rotMat = r * rotMat
+  const m = rotMat;
+  const n0 = r[0]*m[0]+r[1]*m[3]+r[2]*m[6], n1 = r[0]*m[1]+r[1]*m[4]+r[2]*m[7], n2 = r[0]*m[2]+r[1]*m[5]+r[2]*m[8];
+  const n3 = r[3]*m[0]+r[4]*m[3]+r[5]*m[6], n4 = r[3]*m[1]+r[4]*m[4]+r[5]*m[7], n5 = r[3]*m[2]+r[4]*m[5]+r[5]*m[8];
+  const n6 = r[6]*m[0]+r[7]*m[3]+r[8]*m[6], n7 = r[6]*m[1]+r[7]*m[4]+r[8]*m[7], n8 = r[6]*m[2]+r[7]*m[5]+r[8]*m[8];
+  rotMat[0]=n0; rotMat[1]=n1; rotMat[2]=n2;
+  rotMat[3]=n3; rotMat[4]=n4; rotMat[5]=n5;
+  rotMat[6]=n6; rotMat[7]=n7; rotMat[8]=n8;
+  projectAll();
+}
+
+/* ── Initialization ── */
+function init() {
+  const W = window.innerWidth, H = window.innerHeight;
+  canvas.width = W;
+  canvas.height = H;
+
+  /* sqrt-based node count — scales well from phone to desktop */
+  nodeCount = Math.max(40, Math.round(Math.sqrt(W * H) * NODE_SCALE));
+  maxPulses = Math.max(50, Math.round(nodeCount * 0.5));
+
+  /* Nodes — uniform random inside a sphere */
+  nodes = new Array(nodeCount);
+  sphereRadius = Math.max(Math.min(W, H), 0.8 * Math.max(W, H)) / 2;
+  fov = sphereRadius * 2.5;
+  for (let i = 0; i < nodeCount; i++) {
+    let sx, sy, sz;
+    do {
+      sx = Math.random() * 2 - 1;
+      sy = Math.random() * 2 - 1;
+      sz = Math.random() * 2 - 1;
+    } while (sx*sx + sy*sy + sz*sz > 1);
+    nodes[i] = {
+      x: sx * sphereRadius,
+      y: sy * sphereRadius,
+      z: sz * sphereRadius,
+      px: 0, py: 0, ps: 1
+    };
+  }
+  projectAll();
+
+  edgeNodes = null; // unused — spontaneous fires pick any node
+
+  /* Cluster-based adjacency */
+  const K = Math.round(Math.sqrt(nodeCount));
+  // Pick K cluster centers randomly from existing nodes
+  const centerIndices = [];
+  const used = new Set();
+  while (centerIndices.length < K) {
+    const idx = Math.floor(Math.random() * nodeCount);
+    if (!used.has(idx)) { used.add(idx); centerIndices.push(idx); }
+  }
+  // Assign each node to its nearest cluster center (Voronoi)
+  cluster = new Int32Array(nodeCount);
+  for (let i = 0; i < nodeCount; i++) {
+    let bestD = Infinity, bestC = 0;
+    for (let c = 0; c < K; c++) {
+      const ci = centerIndices[c];
+      const dx = nodes[i].x - nodes[ci].x, dy = nodes[i].y - nodes[ci].y, dz = nodes[i].z - nodes[ci].z;
+      const d = dx * dx + dy * dy + dz * dz;
+      if (d < bestD) { bestD = d; bestC = c; }
+    }
+    cluster[i] = bestC;
+  }
+  // Build per-cluster member lists
+  const clusterMembers = new Array(K);
+  for (let c = 0; c < K; c++) clusterMembers[c] = [];
+  for (let i = 0; i < nodeCount; i++) clusterMembers[cluster[i]].push(i);
+
+  // Assign each cluster a spectral color
+  clusterColor = new Array(K);
+  for (let c = 0; c < K; c++) clusterColor[c] = SPECTRUM[c % SPECTRUM.length];
+
+  adj = new Array(nodeCount);
+  for (let i = 0; i < nodeCount; i++) {
+    adj[i] = [];
+    const INTRA = NEIGHBORS - 1;
+    // Intra-cluster: nearest INTRA nodes within same cluster
+    const myCluster = clusterMembers[cluster[i]];
+    const intraDists = [];
+    for (const j of myCluster) {
+      if (j === i) continue;
+      const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y, dz = nodes[i].z - nodes[j].z;
+      intraDists.push({ j, d: dx * dx + dy * dy + dz * dz });
+    }
+    intraDists.sort((a, b) => a.d - b.d);
+    for (let k = 0; k < INTRA && k < intraDists.length; k++) {
+      adj[i].push({ target: intraDists[k].j, weight: Math.random(), lastFired: -1e9 });
+    }
+    // Inter-cluster: long-range connection with LONG_RANGE_P probability
+    if (Math.random() < LONG_RANGE_P) {
+      let bestInterD = Infinity, bestInterJ = -1;
+      for (let j = 0; j < nodeCount; j++) {
+        if (cluster[j] === cluster[i] || j === i) continue;
+        const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y, dz = nodes[i].z - nodes[j].z;
+        const d = dx * dx + dy * dy + dz * dz;
+        if (d < bestInterD) { bestInterD = d; bestInterJ = j; }
+      }
+      if (bestInterJ >= 0) {
+        adj[i].push({ target: bestInterJ, weight: THRESHOLD + 0.01, lastFired: -1e9 });
+      }
+    }
+  }
+
+  /* Offscreen static canvas (drawn after intro completes) */
+  offscreen = document.createElement('canvas');
+  offscreen.width = W;
+  offscreen.height = H;
+  offCtx = offscreen.getContext('2d');
+
+  /* Intro animation state */
+  introStart = performance.now();
+  introComplete = false;
+  revealAt = new Float64Array(nodeCount);
+  for (let i = 0; i < nodeCount; i++) {
+    revealAt[i] = introStart + (1 - nodes[i].py / H) * INTRO_WAVE;
+  }
+
+  /* Simulation state */
+  membrane = new Float64Array(nodeCount);
+  refractoryUntil = new Float64Array(nodeCount);
+  fireTime = new Float64Array(nodeCount);
+  fireBirth = new Float64Array(nodeCount);
+  fireTime.fill(-1e9);
+  fireBirth.fill(-1e9);
+  heap = new MinHeap();
+  inFlight = [];
+  activePulseCount = 0;
+  nextSpontaneous = introStart + INTRO_WAVE + INTRO_FADE + SPONTANEOUS;
+}
+
+/* ── Bake offscreen canvas (static edges + nodes) ── */
+function bakeOffscreen() {
+  offCtx.clearRect(0, 0, offscreen.width, offscreen.height);
+  for (let i = 0; i < nodeCount; i++) {
+    const ds = Math.min(nodes[i].ps, 1.8);
+    const [cr, cg, cb] = clusterColor[cluster[i]];
+    offCtx.fillStyle = `rgba(${cr},${cg},${cb},${0.25 * ds})`;
+    offCtx.beginPath();
+    offCtx.arc(nodes[i].px, nodes[i].py, 2 * ds, 0, Math.PI * 2);
+    offCtx.fill();
+  }
+}
+
+/* ── Fire a node ── */
+function fireNode(i, now, birthTime, firedBy) {
+  if (activePulseCount >= maxPulses) return;
+  fireTime[i] = now;
+  fireBirth[i] = birthTime;
+  membrane[i] = 0;
+  refractoryUntil[i] = now + REFRACTORY;
+  activePulseCount++;
+
+  for (const edge of adj[i]) {
+    if (edge.target === firedBy) continue; // no reverse propagation
+    const dx = nodes[i].x - nodes[edge.target].x;
+    const dy = nodes[i].y - nodes[edge.target].y;
+    const dz = nodes[i].z - nodes[edge.target].z;
+    const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    const jitter = 0.8 + Math.random() * 0.4; // 0.8–1.2
+    const delay = (dist / DELAY_PPS) * 1000 * jitter;
+    const scheduledTime = now + delay;
+    if (scheduledTime > birthTime + CASCADE_LIFE) continue;
+    heap.push({
+      targetNode: edge.target,
+      scheduledTime,
+      birthTime,
+      strength: edge.weight,
+      sourceNode: i,
+      edge
+    });
+    inFlight.push({
+      sourceNode: i,
+      targetNode: edge.target,
+      startTime: now,
+      endTime: scheduledTime,
+      birthTime
+    });
+  }
+}
+
+/* ── Main loop ── */
+function frame() {
+  requestAnimationFrame(frame);
+  if (document.hidden) return;
+
+  const now = performance.now();
+
+  /* Membrane leak — decay sub-threshold charge so it doesn't accumulate across cascades */
+  for (let i = 0; i < nodeCount; i++) {
+    if (membrane[i] > 0) membrane[i] *= 0.95;
+  }
+
+  /* Process due events */
+  while (heap.size > 0 && heap.peek().scheduledTime <= now) {
+    const ev = heap.pop();
+    /* Discard expired cascades */
+    if (now > ev.birthTime + CASCADE_LIFE) continue;
+    const t = ev.targetNode;
+    /* Discard if in refractory */
+    if (now < refractoryUntil[t]) continue;
+    ev.edge.lastFired = now;
+    membrane[t] += ev.strength;
+    if (membrane[t] >= THRESHOLD) {
+      fireNode(t, now, ev.birthTime, ev.sourceNode);
+    }
+  }
+
+  /* Spontaneous firing (skip during intro) */
+  if (introComplete && now >= nextSpontaneous) {
+    const i = Math.floor(Math.random() * nodeCount);
+    if (now >= refractoryUntil[i]) {
+      fireNode(i, now, now, -1);
+    }
+    nextSpontaneous = now + SPONTANEOUS;
+  }
+
+  /* ── Render ── */
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (!introComplete) {
+    /* Intro: fade in nodes bottom-to-top */
+    for (let i = 0; i < nodeCount; i++) {
+      const elapsed = now - revealAt[i];
+      if (elapsed < 0) continue;
+      const ds = Math.min(nodes[i].ps, 1.8);
+      const alpha = Math.min(elapsed / INTRO_FADE, 1) * 0.25 * ds;
+      const [cr, cg, cb] = clusterColor[cluster[i]];
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha})`;
+      ctx.beginPath();
+      ctx.arc(nodes[i].px, nodes[i].py, 2 * ds, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Check if intro is done
+    if (now > introStart + INTRO_WAVE + INTRO_FADE) {
+      introComplete = true;
+      bakeOffscreen();
+    }
+  } else if (isRotating) {
+    /* During rotation: draw nodes directly (offscreen is stale) */
+    for (let i = 0; i < nodeCount; i++) {
+      const ds = Math.min(nodes[i].ps, 1.8);
+      const [cr, cg, cb] = clusterColor[cluster[i]];
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},${0.25 * ds})`;
+      ctx.beginPath();
+      ctx.arc(nodes[i].px, nodes[i].py, 2 * ds, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else {
+    ctx.drawImage(offscreen, 0, 0);
+  }
+
+  /* Fired edges — visible only while decaying */
+  ctx.lineWidth = 1;
+  for (let i = 0; i < nodeCount; i++) {
+    for (const e of adj[i]) {
+      const elapsed = now - e.lastFired;
+      if (elapsed >= EDGE_DECAY) continue;
+      const ds = Math.min((nodes[i].ps + nodes[e.target].ps) / 2, 1.8);
+      const alpha = 0.15 * (1 - elapsed / EDGE_DECAY) * ds;
+      const [cr, cg, cb] = clusterColor[cluster[i]];
+      ctx.strokeStyle = `rgba(${cr},${cg},${cb},${alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(nodes[i].px, nodes[i].py);
+      ctx.lineTo(nodes[e.target].px, nodes[e.target].py);
+      ctx.stroke();
+    }
+  }
+
+  /* Traveling pulses */
+  let j = 0;
+  for (let k = 0; k < inFlight.length; k++) {
+    const p = inFlight[k];
+    const cascadeAge = now - p.birthTime;
+    if (now >= p.endTime || cascadeAge > CASCADE_LIFE + CASCADE_FADE) {
+      continue; // remove by not copying
+    }
+    inFlight[j++] = p;
+    const t = (now - p.startTime) / (p.endTime - p.startTime);
+    if (t < 0) continue;
+    const fade = cascadeAge > CASCADE_LIFE
+      ? 1 - (cascadeAge - CASCADE_LIFE) / CASCADE_FADE : 1;
+    const sx = nodes[p.sourceNode].px, sy = nodes[p.sourceNode].py;
+    const tx = nodes[p.targetNode].px, ty = nodes[p.targetNode].py;
+    const pds = nodes[p.sourceNode].ps + (nodes[p.targetNode].ps - nodes[p.sourceNode].ps) * t;
+    const ds = Math.min(pds, 1.8);
+    const ppx = sx + (tx - sx) * t;
+    const ppy = sy + (ty - sy) * t;
+    ctx.beginPath();
+    ctx.arc(ppx, ppy, 3 * ds, 0, Math.PI * 2);
+    const [pr, pg, pb] = clusterColor[cluster[p.sourceNode]];
+    ctx.fillStyle = `rgba(${pr},${pg},${pb},${(0.6 + 0.4 * (1 - t)) * fade * ds})`;
+    ctx.fill();
+  }
+  inFlight.length = j;
+
+  /* Node glows */
+  for (let i = 0; i < nodeCount; i++) {
+    const elapsed = now - fireTime[i];
+    if (elapsed > GLOW_DURATION || elapsed < 0) continue;
+    const cascadeAge = now - fireBirth[i];
+    const fade = cascadeAge > CASCADE_LIFE
+      ? Math.max(0, 1 - (cascadeAge - CASCADE_LIFE) / CASCADE_FADE) : 1;
+    if (fade <= 0) continue;
+    const sampleIdx = (elapsed / GLOW_DURATION) * (WAVEFORM_LEN - 1);
+    const lo = Math.floor(sampleIdx);
+    const hi = Math.min(lo + 1, WAVEFORM_LEN - 1);
+    const frac = sampleIdx - lo;
+    const intensity = WAVEFORM[lo] + (WAVEFORM[hi] - WAVEFORM[lo]) * frac;
+    if (intensity < 0.01) continue;
+
+    const ds = Math.min(nodes[i].ps, 1.8);
+    const r = (12 + intensity * 18) * ds;
+    const grad = ctx.createRadialGradient(
+      nodes[i].px, nodes[i].py, 0,
+      nodes[i].px, nodes[i].py, r
+    );
+    const [gr, gg, gb] = clusterColor[cluster[i]];
+    grad.addColorStop(0, `rgba(${gr},${gg},${gb},${intensity * 0.9 * fade * ds})`);
+    grad.addColorStop(1, `rgba(${gr},${gg},${gb},0)`);
+    ctx.beginPath();
+    ctx.arc(nodes[i].px, nodes[i].py, r, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  /* Track active pulses from actual in-flight count (returns to 0 when cascades end) */
+  activePulseCount = inFlight.length;
+
+  /* Stats overlay */
+  frameTimes[frameIdx] = now;
+  frameIdx = (frameIdx + 1) % 60;
+  if (frameFilled < 60) frameFilled++;
+  if (statsEl.style.display !== 'none' && now - lastStatsUpdate > 250) {
+    lastStatsUpdate = now;
+    const oldest = frameTimes[(frameIdx - frameFilled + 60) % 60];
+    const fps = frameFilled > 1 ? ((frameFilled - 1) * 1000 / (now - oldest)) : 0;
+    statsEl.innerHTML =
+      `FPS: ${Math.round(fps)}<br>` +
+      `Nodes: ${nodeCount}<br>` +
+      `Heap: ${heap.size}<br>` +
+      `Pulses: ${inFlight.length}`;
+  }
+}
+
+/* ── Touch / click / drag support ── */
+canvas.addEventListener('pointerdown', (e) => {
+  isDragging = true;
+  dragLastX = e.clientX;
+  dragLastY = e.clientY;
+  pointerStartX = e.clientX;
+  pointerStartY = e.clientY;
+  canvas.setPointerCapture(e.pointerId);
+});
+
+canvas.addEventListener('pointermove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - dragLastX;
+  const dy = e.clientY - dragLastY;
+  dragLastX = e.clientX;
+  dragLastY = e.clientY;
+  applyRotation(dx, dy);
+  isRotating = true;
+});
+
+canvas.addEventListener('pointerup', (e) => {
+  if (!isDragging) return;
+  isDragging = false;
+  isRotating = false;
+  canvas.releasePointerCapture(e.pointerId);
+  if (introComplete) bakeOffscreen();
+  const totalDx = e.clientX - pointerStartX;
+  const totalDy = e.clientY - pointerStartY;
+  const totalMove = totalDx * totalDx + totalDy * totalDy;
+
+  if (totalMove < 16) {
+    /* Tap — fire nearest node */
+    const ex = e.clientX, ey = e.clientY;
+    let best = -1, bestD = 20 * 20;
+    for (let i = 0; i < nodeCount; i++) {
+      const ddx = nodes[i].px - ex, ddy = nodes[i].py - ey;
+      const d = ddx * ddx + ddy * ddy;
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    if (best >= 0) {
+      const now = performance.now();
+      if (!introComplete && now < revealAt[best]) return;
+      if (now >= refractoryUntil[best]) {
+        fireNode(best, now, now, -1);
+      }
+    }
+  }
+});
+
+/* ── Stats toggle ── */
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'd' || e.key === 'D') {
+    statsEl.style.display = statsEl.style.display === 'none' ? 'block' : 'none';
+  }
+});
+
+/* ── Resize ── */
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    const wasComplete = introComplete;
+    rotMat = new Float64Array([1,0,0, 0,1,0, 0,0,1]);
+    isRotating = false;
+    init();
+    if (wasComplete) bakeOffscreen();
+  }, 300);
+});
+
+/* ── Start ── */
+init();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
