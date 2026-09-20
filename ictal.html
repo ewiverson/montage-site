@@ -153,7 +153,7 @@ document.querySelectorAll('.email-link').forEach(function (link) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const BG = '#0d1117', INK = '#f2f2f2';
-  const ROWS = 130, AMP = 3.6, STROKE = 1.4;
+  const ROWS = 130, AMP = 3.6, STROKE = 2.5;
   const marginTop = 40, marginBottom = 30, marginX = 40;
   const usableH = H - marginTop - marginBottom;
   const usableW = W - marginX * 2;
@@ -233,36 +233,42 @@ document.querySelectorAll('.email-link').forEach(function (link) {
       const swPhase = Math.random(), swJitter = 0.85 + Math.random() * 0.3;
       const period = WAVE_PERIOD * swJitter;
 
-      const pts = [];
+      /* Non-ictal lines off: only the stretches inside the letters are drawn */
+      let pts = [];
+      const flush = () => {
+        if (pts.length > 1) drawRun(pts, bottomY);
+        pts = [];
+      };
       for (let i = 0; i < N; i++) {
         const x = marginX + (i / (N - 1)) * usableW;
-        const bg = (Math.sin(i * f1 + p1) * 0.6 + Math.sin(i * f2 + p2) * 0.4) * baselineAmp;
         const m = maskAt(x, baseline);
-        let val = bg;
-        if (m > 0.02) {
-          const phase = ((i + swPhase * period) % period) / period;
-          val = bg * (1 - m) + shape(phase) * maxSeizureAmp * m;
-        }
+        if (m <= 0.02) { flush(); continue; }
+        const bg = (Math.sin(i * f1 + p1) * 0.6 + Math.sin(i * f2 + p2) * 0.4) * baselineAmp;
+        const phase = ((i + swPhase * period) % period) / period;
+        const val = bg * (1 - m) + shape(phase) * maxSeizureAmp * m;
         pts.push([x, baseline - val]);
       }
-
-      /* Opaque fill below each trace so lower rows occlude upper ones */
-      ctx.beginPath();
-      ctx.moveTo(pts[0][0], bottomY);
-      for (const p of pts) ctx.lineTo(p[0], p[1]);
-      ctx.lineTo(pts[pts.length - 1][0], bottomY);
-      ctx.closePath();
-      ctx.fillStyle = BG;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(pts[0][0], pts[0][1]);
-      for (const p of pts) ctx.lineTo(p[0], p[1]);
-      ctx.strokeStyle = INK;
-      ctx.lineWidth = STROKE;
-      ctx.lineJoin = 'round';
-      ctx.stroke();
+      flush();
     }
+  }
+
+  function drawRun(pts, bottomY) {
+    /* Opaque fill below each trace so lower rows occlude upper ones */
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], bottomY);
+    for (const p of pts) ctx.lineTo(p[0], p[1]);
+    ctx.lineTo(pts[pts.length - 1][0], bottomY);
+    ctx.closePath();
+    ctx.fillStyle = BG;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (const p of pts) ctx.lineTo(p[0], p[1]);
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = STROKE;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
   }
   /* Anton is a web font: wait for it before measuring/masking */
   if (FONT.family.startsWith('Anton') && document.fonts && document.fonts.load) {

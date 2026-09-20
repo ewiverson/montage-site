@@ -44,7 +44,12 @@
   }
   header a:hover, footer a:hover { color: rgba(255, 255, 255, 0.85); }
 
+  #hero { position: relative; margin-top: 24px; }
   h1 {
+    position: absolute; inset: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 20px;
+    pointer-events: none;   /* let drags/taps reach the simulation underneath */
     font-family: Impact, Haettenschweiler, Anton, 'Arial Narrow Bold', sans-serif;
     font-size: clamp(2.5rem, 9vw, 7rem);
     font-weight: 400;
@@ -53,11 +58,11 @@
     text-transform: uppercase;
     text-align: center;
     color: #fff;
-    padding: 48px 20px 32px;
+    text-shadow: 0 2px 24px rgba(13, 17, 23, 0.85);
   }
 
   #sim {
-    position: relative; width: 100%; height: 45vh; min-height: 280px;
+    position: relative; width: 100%; height: 55vh; min-height: 340px;
     overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
             mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
@@ -101,11 +106,12 @@
   <a class="email-link" href="#">Contact</a>
 </header>
 
-<h1>Montage Neuroscience</h1>
-
-<div id="sim">
-  <canvas id="canvas"></canvas>
-  <div id="stats" data-nosnippet></div>
+<div id="hero">
+  <div id="sim">
+    <canvas id="canvas"></canvas>
+    <div id="stats" data-nosnippet></div>
+  </div>
+  <h1>Montage Neuroscience</h1>
 </div>
 
 <main>
@@ -811,9 +817,14 @@ window.addEventListener('keydown', (e) => {
 });
 
 /* ── Resize ── */
+let lastW = canvas.clientWidth, lastH = canvas.clientHeight;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
+    /* Mobile browsers fire resize when the URL bar shows/hides during scroll;
+       only rebuild if the banner itself actually changed size. */
+    if (canvas.clientWidth === lastW && canvas.clientHeight === lastH) return;
+    lastW = canvas.clientWidth; lastH = canvas.clientHeight;
     const wasComplete = introComplete;
     rotMat = new Float64Array([1,0,0, 0,1,0, 0,0,1]);
     isRotating = false;
