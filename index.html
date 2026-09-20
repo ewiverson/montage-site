@@ -47,13 +47,13 @@
   #hero { position: relative; margin-top: 24px; }
   h1 {
     position: absolute; inset: 0; z-index: 1;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 0 20px;
     pointer-events: none;   /* let drags/taps reach the simulation underneath */
     font-family: Impact, Haettenschweiler, Anton, 'Arial Narrow Bold', sans-serif;
-    font-size: clamp(2.5rem, 9vw, 7rem);
+    font-size: clamp(3rem, 14.5vw, 11rem);
     font-weight: 400;
-    line-height: 1;
+    line-height: 0.95;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     text-align: center;
@@ -62,28 +62,60 @@
   }
 
   #sim {
-    position: relative; width: 100%; height: 55vh; min-height: 340px;
+    position: relative; width: 100%; height: 55vh; min-height: 420px;
     overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
             mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
   }
   canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
 
-  main { max-width: 680px; margin: 0 auto; padding: 0 20px; }
-  section.content { padding: 72px 0 0; scroll-margin-top: 24px; }
+  main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+  section.content { padding: 88px 0 0; scroll-margin-top: 24px; }
   section.content h2 {
     font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45); margin-bottom: 16px;
+    color: rgba(255, 255, 255, 0.45); margin-bottom: 24px;
   }
-  section.content h3 {
-    font-size: 17px; font-weight: 500; color: rgba(255, 255, 255, 0.9); margin-bottom: 12px;
+  section.content h3 { font-size: 17px; font-weight: 500; line-height: 1.4; color: #fff; }
+
+  /* About: numbered rows */
+  .rows { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .row {
+    display: grid; grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 4px 24px; align-items: baseline;
+    padding: 24px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-  section.content ul { padding-left: 1.2em; }
-  section.content li + li { margin-top: 12px; }
-  section.content strong { font-weight: 500; color: rgba(255, 255, 255, 0.9); }
+  .row .num { font-size: 13px; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.3); }
+
+  /* Services: cards */
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .cards .card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .card {
+    --dot: hsl(var(--h) 85% 60%);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px; padding: 24px;
+  }
+  .card::before {
+    content: ''; display: block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--dot); margin-bottom: 16px;
+  }
+  .card p { margin-top: 8px; font-size: 15px; }
+
+  /* How I work: three columns */
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .steps p {
+    border-top: 2px solid rgba(255, 255, 255, 0.25); padding-top: 16px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  @media (max-width: 700px) {
+    .row { grid-template-columns: 32px minmax(0, 1fr); }
+    .row p { grid-column: 2; }
+    .cards, .steps { grid-template-columns: minmax(0, 1fr); }
+  }
 
   footer {
-    max-width: 680px; margin: 96px auto 0; padding: 24px 20px 40px;
+    max-width: 960px; margin: 96px auto 0; padding: 24px 20px 40px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
     font-size: 13px; color: rgba(255, 255, 255, 0.35);
@@ -111,41 +143,77 @@
     <canvas id="canvas"></canvas>
     <div id="stats" data-nosnippet></div>
   </div>
-  <h1>Montage Neuroscience</h1>
+  <h1><span>Montage</span> <span>Neuroscience</span></h1>
 </div>
 
 <main>
   <section class="content" id="about">
     <h2>About</h2>
-    <h3>What sets me apart</h3>
-    <ul>
-      <li>PhD in Electrical and Computer Engineering, with experience designing electrical characterization experiments since graduate school and a decade of R&amp;D in semiconductor device physics</li>
-      <li>Translational research experience: taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</li>
-      <li>Engineering discipline from industry: clear communication across cross-functional teams, vendors, and customers; data-driven decision making; and modern software development practices</li>
-      <li>A personal stake: my youngest daughter was born with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy. See My Story for more.</li>
-    </ul>
+    <div class="rows">
+      <div class="row">
+        <span class="num">01</span>
+        <h3>PhD in Electrical and Computer Engineering</h3>
+        <p>With experience designing electrical characterization experiments since graduate school and a decade of R&amp;D in semiconductor device physics</p>
+      </div>
+      <div class="row">
+        <span class="num">02</span>
+        <h3>Translational research experience</h3>
+        <p>Taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</p>
+      </div>
+      <div class="row">
+        <span class="num">03</span>
+        <h3>Engineering discipline from industry</h3>
+        <p>Clear communication across cross-functional teams, vendors, and customers; data-driven decision making; and modern software development practices</p>
+      </div>
+      <div class="row">
+        <span class="num">04</span>
+        <h3>A personal stake</h3>
+        <p>My youngest daughter was born with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy.</p>
+      </div>
+    </div>
   </section>
 
   <section class="content" id="services">
     <h2>Services</h2>
-    <ul>
-      <li><strong>Time-series analysis for EEG, iEEG/SEEG, and other physiological signals</strong>: preprocessing, quality control, feature extraction, and event detection</li>
-      <li><strong>Low-noise measurement system design for bio-signal acquisition</strong>: scoping signal-chain architecture, sensor and amplifier selection, and calibration strategy so your system hits its noise floor and dynamic range targets before you commit capital to hardware.</li>
-      <li><strong>Data standardization and sharing prep</strong>: BIDS/NWB conversion, metadata, validation, and archive-ready datasets</li>
-      <li><strong>Statistical and simulation modeling</strong>: Monte Carlo calibration, power analysis, and model fitting to measured data</li>
-      <li><strong>Research software</strong>: packaging lab scripts into tested, documented Python libraries</li>
-      <li><strong>Reproducibility support</strong>: version control, automated tests, containerized environments, and methods documentation</li>
-      <li><strong>De-identification and database tooling</strong>, built and tested on synthetic data so I never have to handle protected health information</li>
-    </ul>
+    <div class="cards">
+      <div class="card" style="--h:0">
+        <h3>Time-series analysis for EEG, iEEG/SEEG, and other physiological signals</h3>
+        <p>Preprocessing, quality control, feature extraction, and event detection</p>
+      </div>
+      <div class="card" style="--h:30">
+        <h3>Low-noise measurement system design for bio-signal acquisition</h3>
+        <p>Scoping signal-chain architecture, sensor and amplifier selection, and calibration strategy so your system hits its noise floor and dynamic range targets before you commit capital to hardware.</p>
+      </div>
+      <div class="card" style="--h:60">
+        <h3>Data standardization and sharing prep</h3>
+        <p>BIDS/NWB conversion, metadata, validation, and archive-ready datasets</p>
+      </div>
+      <div class="card" style="--h:120">
+        <h3>Statistical and simulation modeling</h3>
+        <p>Monte Carlo calibration, power analysis, and model fitting to measured data</p>
+      </div>
+      <div class="card" style="--h:180">
+        <h3>Research software</h3>
+        <p>Packaging lab scripts into tested, documented Python libraries</p>
+      </div>
+      <div class="card" style="--h:210">
+        <h3>Reproducibility support</h3>
+        <p>Version control, automated tests, containerized environments, and methods documentation</p>
+      </div>
+      <div class="card" style="--h:270">
+        <h3>De-identification and database tooling</h3>
+        <p>Built and tested on synthetic data so I never have to handle protected health information</p>
+      </div>
+    </div>
   </section>
 
   <section class="content" id="how-i-work">
     <h2>How I work</h2>
-    <ul>
-      <li>Scoped, milestone-based engagements with defined deliverables and acceptance tests</li>
-      <li>Flexible structure: hourly or daily consulting, or fixed-scope projects</li>
-      <li>Open, well-documented code that your lab owns and can maintain</li>
-    </ul>
+    <div class="steps">
+      <p>Scoped, milestone-based engagements with defined deliverables and acceptance tests</p>
+      <p>Flexible structure: hourly or daily consulting, or fixed-scope projects</p>
+      <p>Open, well-documented code that your lab owns and can maintain</p>
+    </div>
   </section>
 </main>
 
