@@ -55,41 +55,16 @@
   }
   section.content h3 { font-size: 17px; font-weight: 500; line-height: 1.4; color: #fff; }
 
-  /* About: numbered rows */
   .rows { border-top: 1px solid rgba(255, 255, 255, 0.1); }
   .row {
-    display: grid; grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1.6fr);
-    gap: 4px 24px; align-items: baseline;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 4px 32px; align-items: baseline;
     padding: 24px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-  .row .num { font-size: 13px; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.3); }
-
-  /* Services: cards */
-  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  .cards .card:last-child:nth-child(odd) { grid-column: 1 / -1; }
-  .card {
-    --dot: hsl(var(--h) 85% 60%);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 8px; padding: 24px;
-  }
-  .card::before {
-    content: ''; display: block; width: 8px; height: 8px; border-radius: 50%;
-    background: var(--dot); margin-bottom: 16px;
-  }
-  .card p { margin-top: 8px; font-size: 15px; }
-
-  /* How I work: three columns */
-  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-  .steps p {
-    border-top: 2px solid rgba(255, 255, 255, 0.25); padding-top: 16px;
-    color: rgba(255, 255, 255, 0.85);
-  }
+  .row.single h3 { grid-column: 1 / -1; }
 
   @media (max-width: 700px) {
-    .row { grid-template-columns: 32px minmax(0, 1fr); }
-    .row p { grid-column: 2; }
-    .cards, .steps { grid-template-columns: minmax(0, 1fr); }
+    .row { grid-template-columns: minmax(0, 1fr); }
   }
 
   footer {
@@ -103,23 +78,28 @@
     position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip: rect(0 0 0 0); white-space: nowrap;
   }
-  .card { --dot: #4a72c4; }
-  #hero { padding: 40px 16px 0; }
-  #field { display: block; width: 100%; max-width: 1200px; height: auto; margin: 0 auto; }
+  #hero { position: relative; min-height: 640px; margin-bottom: -56px; }
+  #field { display: block; width: 100%; }
+  #hero header {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 1; padding-bottom: 28px;
+    background: linear-gradient(to bottom, rgba(13, 17, 23, 0.9), rgba(13, 17, 23, 0));
+  }
+  #hero header a { color: rgba(255, 255, 255, 0.75); text-shadow: 0 0 8px #0d1117; }
+  #hero header a:hover { color: #fff; }
+  main { position: relative; }
 </style>
 </head>
 <body>
-<header data-nosnippet>
-  <a href="#about">About</a>
-  <a href="#services">Services</a>
-  <a href="#how-i-work">How I work</a>
-  <a class="email-link" href="#">Contact</a>
-</header>
-
 <h1 class="sr-only">Montage Neuroscience</h1>
 
 <div id="hero">
   <canvas id="field" role="img" aria-label="Montage Neuroscience, spelled out in EEG-style traces"></canvas>
+  <header data-nosnippet>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#how-i-work">How I work</a>
+    <a class="email-link" href="#">Contact</a>
+  </header>
 </div>
 
 <main>
@@ -127,22 +107,18 @@
     <h2>About</h2>
     <div class="rows">
       <div class="row">
-        <span class="num">01</span>
         <h3>PhD in Electrical and Computer Engineering</h3>
         <p>With experience designing electrical characterization experiments since graduate school and a decade of R&amp;D in semiconductor device physics</p>
       </div>
       <div class="row">
-        <span class="num">02</span>
         <h3>Translational research experience</h3>
         <p>Taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</p>
       </div>
       <div class="row">
-        <span class="num">03</span>
         <h3>Engineering discipline from industry</h3>
         <p>Clear communication across cross-functional teams, vendors, and customers; data-driven decision making; and modern software development practices</p>
       </div>
       <div class="row">
-        <span class="num">04</span>
         <h3>A personal stake</h3>
         <p>My youngest daughter was born with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy.</p>
       </div>
@@ -151,32 +127,32 @@
 
   <section class="content" id="services">
     <h2>Services</h2>
-    <div class="cards">
-      <div class="card" style="--h:0">
+    <div class="rows">
+      <div class="row">
         <h3>Time-series analysis for EEG, iEEG/SEEG, and other physiological signals</h3>
         <p>Preprocessing, quality control, feature extraction, and event detection</p>
       </div>
-      <div class="card" style="--h:30">
+      <div class="row">
         <h3>Low-noise measurement system design for bio-signal acquisition</h3>
         <p>Scoping signal-chain architecture, sensor and amplifier selection, and calibration strategy so your system hits its noise floor and dynamic range targets before you commit capital to hardware.</p>
       </div>
-      <div class="card" style="--h:60">
+      <div class="row">
         <h3>Data standardization and sharing prep</h3>
         <p>BIDS/NWB conversion, metadata, validation, and archive-ready datasets</p>
       </div>
-      <div class="card" style="--h:120">
+      <div class="row">
         <h3>Statistical and simulation modeling</h3>
         <p>Monte Carlo calibration, power analysis, and model fitting to measured data</p>
       </div>
-      <div class="card" style="--h:180">
+      <div class="row">
         <h3>Research software</h3>
         <p>Packaging lab scripts into tested, documented Python libraries</p>
       </div>
-      <div class="card" style="--h:210">
+      <div class="row">
         <h3>Reproducibility support</h3>
         <p>Version control, automated tests, containerized environments, and methods documentation</p>
       </div>
-      <div class="card" style="--h:270">
+      <div class="row">
         <h3>De-identification and database tooling</h3>
         <p>Built and tested on synthetic data so I never have to handle protected health information</p>
       </div>
@@ -185,10 +161,16 @@
 
   <section class="content" id="how-i-work">
     <h2>How I work</h2>
-    <div class="steps">
-      <p>Scoped, milestone-based engagements with defined deliverables and acceptance tests</p>
-      <p>Flexible structure: hourly or daily consulting, or fixed-scope projects</p>
-      <p>Open, well-documented code that your lab owns and can maintain</p>
+    <div class="rows">
+      <div class="row single">
+        <h3>Scoped, milestone-based engagements with defined deliverables and acceptance tests</h3>
+      </div>
+      <div class="row single">
+        <h3>Flexible structure: hourly or daily consulting, or fixed-scope projects</h3>
+      </div>
+      <div class="row single">
+        <h3>Open, well-documented code that your lab owns and can maintain</h3>
+      </div>
     </div>
   </section>
 </main>
@@ -213,20 +195,18 @@ document.querySelectorAll('.email-link').forEach(function (link) {
 </script>
 <script>
 (function () {
+  const hero = document.getElementById('hero');
+  const header = hero.querySelector('header');
   const canvas = document.getElementById('field');
   const ctx = canvas.getContext('2d');
-  const W = 1200, H = 560;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const BG = '#0d1117', INK = '#f2f2f2', BLUE = '#24407a';
-  const ROWS = 130, AMP = 3.6, STROKE = 2.5, STROKE_BG = 1.4;
-  const marginTop = 40, marginBottom = 30, marginX = 40;
-  const usableH = H - marginTop - marginBottom;
-  const usableW = W - marginX * 2;
-  const N = Math.round(usableW / 2.55);   // ~2.55px per sample
+  const STROKE = 1.4;
+  const AMP = 3.6;            // ictal amplitude, in row pitches
+  const ROWS_PER_CAP = 45;    // line density: rows across the tall line's cap height
+  const MIN_PITCH = 3;        // px between lines, floor for narrow screens
+  const MONTAGE_RATIO = 0.88; // MONTAGE width as a fraction of NEUROSCIENCE width
   const LINES = ['MONTAGE', 'NEUROSCIENCE'];
 
   /* Impact where installed, otherwise the bundled Anton (similar condensed heavy face) */
@@ -240,6 +220,7 @@ document.querySelectorAll('.email-link').forEach(function (link) {
   const FONT = hasImpact()
     ? { weight: '400', family: 'Impact, Haettenschweiler, sans-serif' }
     : { weight: '400', family: 'Anton, sans-serif' };
+  const fontStr = (fs) => FONT.weight + ' ' + fs + 'px ' + FONT.family;
 
   /* Spike-and-wave shape */
   function shape(phase) {
@@ -251,7 +232,33 @@ document.querySelectorAll('.email-link').forEach(function (link) {
   }
   const WAVE_PERIOD = 26;
 
+  let W, H, pitch, maskData, lastW = 0;
+
+  /* Size the hero to the nav + two lines of text, and paint the text into a mask */
   function buildMask() {
+    W = Math.round(hero.clientWidth);
+    const m = document.createElement('canvas').getContext('2d');
+    m.font = fontStr(100);
+    const wM = m.measureText(LINES[0]).width, wN = m.measureText(LINES[1]).width;
+    const targetW = Math.min(W * 0.92, 1010);
+    const fsN = 100 * targetW / wN;
+    const fsM = 100 * (targetW * MONTAGE_RATIO) / wM;
+    m.font = fontStr(fsN);
+    const capN = m.measureText('H').actualBoundingBoxAscent;
+    m.font = fontStr(fsM);
+    const capM = m.measureText('H').actualBoundingBoxAscent;
+    const gap = capN * 0.2;
+    const top = header.offsetHeight + 48;
+    H = Math.round(top + capM + gap + capN + 80);
+    pitch = Math.max(MIN_PITCH, capN / ROWS_PER_CAP);
+
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.height = H + 'px';
+    hero.style.height = H + 'px';
+    hero.style.minHeight = '0';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
     const off = document.createElement('canvas');
     off.width = W; off.height = H;
     const o = off.getContext('2d');
@@ -260,27 +267,13 @@ document.querySelectorAll('.email-link').forEach(function (link) {
     o.fillStyle = '#fff';
     o.textAlign = 'center';
     o.textBaseline = 'alphabetic';
-
-    const fontStr = (fs) => FONT.weight + ' ' + fs + 'px ' + FONT.family;
-    o.font = fontStr(100);
-    const widest = Math.max(...LINES.map((t) => o.measureText(t).width));
-    let fs = 100 * (usableW * 0.9) / widest;
-    o.font = fontStr(fs);
-    let cap = o.measureText('H').actualBoundingBoxAscent;
-    let gap = cap * 0.22;
-    if (2 * cap + gap > usableH * 0.85) {
-      fs *= (usableH * 0.85) / (2 * cap + gap);
-      o.font = fontStr(fs);
-      cap = o.measureText('H').actualBoundingBoxAscent;
-      gap = cap * 0.22;
-    }
-    const top = (H - (2 * cap + gap)) / 2;
-    o.fillText(LINES[0], W / 2, top + cap);
-    o.fillText(LINES[1], W / 2, top + 2 * cap + gap);
-    return o.getImageData(0, 0, W, H).data;
+    o.font = fontStr(fsM);
+    o.fillText(LINES[0], W / 2, top + capM);
+    o.font = fontStr(fsN);
+    o.fillText(LINES[1], W / 2, top + capM + gap + capN);
+    maskData = o.getImageData(0, 0, W, H).data;
   }
 
-  let maskData;
   function maskAt(px, py) {
     px = Math.max(0, Math.min(W - 1, Math.round(px)));
     py = Math.max(0, Math.min(H - 1, Math.round(py)));
@@ -290,13 +283,14 @@ document.querySelectorAll('.email-link').forEach(function (link) {
   function draw() {
     ctx.fillStyle = BG;
     ctx.fillRect(0, 0, W, H);
-    const rowStep = usableH / (ROWS - 1);
-    const baselineAmp = rowStep * 0.35;
-    const maxSeizureAmp = rowStep * AMP;
+    const ROWS = Math.floor(H / pitch) + 2;
+    const N = Math.round(W / 2.55);   // ~2.55px per sample
+    const baselineAmp = pitch * 0.35;
+    const maxSeizureAmp = pitch * AMP;
 
     for (let r = 0; r < ROWS; r++) {
-      const baseline = marginTop + r * rowStep;
-      const bottomY = baseline + rowStep * 0.9;
+      const baseline = r * pitch;
+      const bottomY = baseline + pitch * 0.9;
       const f1 = 0.02 + Math.random() * 0.02, f2 = 0.05 + Math.random() * 0.03;
       const p1 = Math.random() * Math.PI * 2, p2 = Math.random() * Math.PI * 2;
       const swPhase = Math.random(), swJitter = 0.85 + Math.random() * 0.3;
@@ -304,7 +298,7 @@ document.querySelectorAll('.email-link').forEach(function (link) {
 
       const pts = [], ictal = [];
       for (let i = 0; i < N; i++) {
-        const x = marginX + (i / (N - 1)) * usableW;
+        const x = (i / (N - 1)) * W;
         const bg = (Math.sin(i * f1 + p1) * 0.6 + Math.sin(i * f2 + p2) * 0.4) * baselineAmp;
         const m = maskAt(x, baseline);
         let val = bg;
@@ -327,11 +321,11 @@ document.querySelectorAll('.email-link').forEach(function (link) {
 
       /* Non-ictal: the whole trace in dark blue */
       ctx.lineJoin = 'round';
+      ctx.lineWidth = STROKE;
       ctx.beginPath();
       ctx.moveTo(pts[0][0], pts[0][1]);
       for (const p of pts) ctx.lineTo(p[0], p[1]);
       ctx.strokeStyle = BLUE;
-      ctx.lineWidth = STROKE_BG;
       ctx.stroke();
 
       /* Ictal: the stretches inside the letters, in white, on top */
@@ -342,17 +336,27 @@ document.querySelectorAll('.email-link').forEach(function (link) {
         else ctx.moveTo(pts[i][0], pts[i][1]);
       }
       ctx.strokeStyle = INK;
-      ctx.lineWidth = STROKE;
       ctx.stroke();
     }
   }
+
+  function rebuild() { buildMask(); draw(); lastW = W; }
+
   /* Anton is a web font: wait for it before measuring/masking */
   if (FONT.family.startsWith('Anton') && document.fonts && document.fonts.load) {
     document.fonts.load('40px Anton').then(rebuild, rebuild);
   } else {
     rebuild();
   }
-  function rebuild() { maskData = buildMask(); draw(); }
+
+  /* Redraw only when the width changes (mobile URL-bar show/hide fires resize while scrolling) */
+  let resizeTimer = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (Math.round(hero.clientWidth) !== lastW) rebuild();
+    }, 200);
+  });
 })();
 </script>
 </body>
