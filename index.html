@@ -20,48 +20,70 @@
 <meta name="twitter:title" content="Montage Neuroscience">
 <meta name="twitter:description" content="Research and development supporting the war on drug-resistant epilepsy.">
 <style>
+  @font-face {
+    font-family: 'Anton';
+    font-style: normal; font-weight: 400; font-display: swap;
+    src: url(/fonts/anton-latin.woff2) format('woff2');
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #0d1117; overflow: hidden; }
-  canvas { display: block; position: absolute; top: 0; left: 0; touch-action: none; }
-  #overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    pointer-events: none; z-index: 1;
+  html { scroll-behavior: smooth; }
+  body {
+    background: #0d1117; color: rgba(255, 255, 255, 0.7);
+    font-family: system-ui, -apple-system, sans-serif; line-height: 1.7;
   }
-  #overlay h1 {
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size: clamp(1.5rem, 4vw, 3rem);
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    color: rgba(255, 255, 255, 0.55);
-    text-transform: uppercase;
+  a { color: inherit; }
+
+  header {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 32px;
+    padding: 24px 20px 0;
   }
-  .contact-links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin-top: 24px;
-    pointer-events: auto;
+  header a, footer a {
+    font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45); text-decoration: none;
+    transition: color 0.3s;
   }
-  .contact-links a {
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size: 14px;
+  header a:hover, footer a:hover { color: rgba(255, 255, 255, 0.85); }
+
+  h1 {
+    font-family: Impact, Haettenschweiler, Anton, 'Arial Narrow Bold', sans-serif;
+    font-size: clamp(2.5rem, 9vw, 7rem);
     font-weight: 400;
-    letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.45);
-    text-decoration: none;
-    background: rgba(13, 17, 23, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 8px 20px;
-    border-radius: 4px;
-    transition: color 0.3s, border-color 0.3s;
-    cursor: pointer;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #fff;
+    padding: 48px 20px 32px;
   }
-  .contact-links a:hover {
-    color: rgba(255, 255, 255, 0.8);
-    border-color: rgba(255, 255, 255, 0.4);
+
+  #sim {
+    position: relative; width: 100%; height: 45vh; min-height: 280px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
+            mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
   }
+  canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+
+  main { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+  section.content { padding: 72px 0 0; scroll-margin-top: 24px; }
+  section.content h2 {
+    font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45); margin-bottom: 16px;
+  }
+  section.content h3 {
+    font-size: 17px; font-weight: 500; color: rgba(255, 255, 255, 0.9); margin-bottom: 12px;
+  }
+  section.content ul { padding-left: 1.2em; }
+  section.content li + li { margin-top: 12px; }
+  section.content strong { font-weight: 500; color: rgba(255, 255, 255, 0.9); }
+
+  footer {
+    max-width: 680px; margin: 96px auto 0; padding: 24px 20px 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    font-size: 13px; color: rgba(255, 255, 255, 0.35);
+  }
+
   #stats {
     position: absolute; bottom: 8px; left: 8px; z-index: 2;
     font-family: 'SF Mono', 'Consolas', monospace; font-size: 11px;
@@ -72,22 +94,71 @@
 </style>
 </head>
 <body>
-<canvas id="canvas"></canvas>
-<div id="overlay">
-  <h1>Montage Neuroscience</h1>
-  <div class="contact-links" data-nosnippet>
-    <a id="email-link" href="#">Contact</a>
-  </div>
+<header data-nosnippet>
+  <a href="#about">About</a>
+  <a href="#services">Services</a>
+  <a href="#how-i-work">How I work</a>
+  <a class="email-link" href="#">Contact</a>
+</header>
+
+<h1>Montage Neuroscience</h1>
+
+<div id="sim">
+  <canvas id="canvas"></canvas>
+  <div id="stats" data-nosnippet></div>
 </div>
-<div id="stats" data-nosnippet></div>
+
+<main>
+  <section class="content" id="about">
+    <h2>About</h2>
+    <h3>What sets me apart</h3>
+    <ul>
+      <li>PhD in Electrical and Computer Engineering, with experience designing electrical characterization experiments since graduate school and a decade of R&amp;D in semiconductor device physics</li>
+      <li>Translational research experience: taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</li>
+      <li>Engineering discipline from industry: clear communication across cross-functional teams, vendors, and customers; data-driven decision making; and modern software development practices</li>
+      <li>A personal stake: my youngest daughter was born with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy. See My Story for more.</li>
+    </ul>
+  </section>
+
+  <section class="content" id="services">
+    <h2>Services</h2>
+    <ul>
+      <li><strong>Time-series analysis for EEG, iEEG/SEEG, and other physiological signals</strong>: preprocessing, quality control, feature extraction, and event detection</li>
+      <li><strong>Low-noise measurement system design for bio-signal acquisition</strong>: scoping signal-chain architecture, sensor and amplifier selection, and calibration strategy so your system hits its noise floor and dynamic range targets before you commit capital to hardware.</li>
+      <li><strong>Data standardization and sharing prep</strong>: BIDS/NWB conversion, metadata, validation, and archive-ready datasets</li>
+      <li><strong>Statistical and simulation modeling</strong>: Monte Carlo calibration, power analysis, and model fitting to measured data</li>
+      <li><strong>Research software</strong>: packaging lab scripts into tested, documented Python libraries</li>
+      <li><strong>Reproducibility support</strong>: version control, automated tests, containerized environments, and methods documentation</li>
+      <li><strong>De-identification and database tooling</strong>, built and tested on synthetic data so I never have to handle protected health information</li>
+    </ul>
+  </section>
+
+  <section class="content" id="how-i-work">
+    <h2>How I work</h2>
+    <ul>
+      <li>Scoped, milestone-based engagements with defined deliverables and acceptance tests</li>
+      <li>Flexible structure: hourly or daily consulting, or fixed-scope projects</li>
+      <li>Open, well-documented code that your lab owns and can maintain</li>
+    </ul>
+  </section>
+</main>
+
+<footer data-nosnippet>
+  <span>&copy; Montage Neuroscience</span>
+  <a href="/ictal.html">Alt: signal field</a>
+  <a class="email-link" href="#">Contact</a>
+</footer>
 <script>
-document.getElementById('email-link').addEventListener('click', function reveal(e) {
-  e.preventDefault();
-  var el = e.currentTarget;
-  var addr = atob('ZXJpY0Btb250YWdlbmV1cm9zY2llbmNlLmNvbQ==');
-  el.textContent = addr;
-  el.href = 'mailto:' + addr;
-  el.removeEventListener('click', reveal);
+document.querySelectorAll('.email-link').forEach(function (link) {
+  link.addEventListener('click', function reveal(e) {
+    e.preventDefault();
+    var addr = atob('ZXJpY0Btb250YWdlbmV1cm9zY2llbmNlLmNvbQ==');
+    document.querySelectorAll('.email-link').forEach(function (el) {
+      el.textContent = addr;
+      el.href = 'mailto:' + addr;
+      el.removeEventListener('click', reveal);
+    });
+  });
 });
 </script>
 <script>
@@ -342,7 +413,7 @@ function applyRotation(dx, dy) {
 
 /* ── Initialization ── */
 function init() {
-  const W = window.innerWidth, H = window.innerHeight;
+  const W = canvas.clientWidth, H = canvas.clientHeight;
   canvas.width = W;
   canvas.height = H;
 
@@ -707,7 +778,8 @@ canvas.addEventListener('pointerup', (e) => {
 
   if (totalMove < 16) {
     /* Tap — fire nearest node */
-    const ex = e.clientX, ey = e.clientY;
+    const rect = canvas.getBoundingClientRect();
+    const ex = e.clientX - rect.left, ey = e.clientY - rect.top;
     let best = -1, bestD = 20 * 20;
     for (let i = 0; i < nodeCount; i++) {
       const ddx = nodes[i].px - ex, ddy = nodes[i].py - ey;
@@ -722,6 +794,13 @@ canvas.addEventListener('pointerup', (e) => {
       }
     }
   }
+});
+
+canvas.addEventListener('pointercancel', () => {
+  if (!isDragging) return;
+  isDragging = false;
+  isRotating = false;
+  if (introComplete) bakeOffscreen();
 });
 
 /* ── Stats toggle ── */
