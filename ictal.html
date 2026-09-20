@@ -47,20 +47,37 @@
 
 
 
-  main { max-width: 960px; margin: 0 auto; padding: 0 20px; }
-  section.content { padding: 88px 0 0; scroll-margin-top: 24px; }
+  main { max-width: 960px; margin: 0 auto; padding: 64px 20px 0; }
+  section.content { scroll-margin-top: 24px; }
+  section.content details { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+  section.content:first-child details { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+
+  summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 28px 0; cursor: pointer; list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: '+'; font-size: 22px; line-height: 1;
+    color: rgba(255, 255, 255, 0.45); transition: color 0.3s;
+  }
+  details[open] summary::after { content: '\2212'; }
+  summary:hover::after, summary:hover h2 { color: rgba(255, 255, 255, 0.85); }
+  summary:focus-visible { outline: 1px solid rgba(255, 255, 255, 0.5); outline-offset: 4px; }
+
   section.content h2 {
     font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45); margin-bottom: 24px;
+    color: rgba(255, 255, 255, 0.45); transition: color 0.3s;
   }
   section.content h3 { font-size: 17px; font-weight: 500; line-height: 1.4; color: #fff; }
 
-  .rows { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .rows { padding-bottom: 20px; }
   .row {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
-    gap: 4px 32px; align-items: baseline;
-    padding: 24px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 4px 32px; align-items: baseline; padding: 24px 0;
   }
+  .row:first-child { padding-top: 0; }
+  .row + .row { border-top: 1px solid rgba(255, 255, 255, 0.1); }
   .row.single h3 { grid-column: 1 / -1; }
 
   @media (max-width: 700px) {
@@ -104,74 +121,80 @@
 
 <main>
   <section class="content" id="about">
-    <h2>About</h2>
-    <div class="rows">
-      <div class="row">
-        <h3>PhD in Electrical and Computer Engineering</h3>
-        <p>With experience designing electrical characterization experiments since graduate school and a decade of R&amp;D in semiconductor device physics</p>
-      </div>
-      <div class="row">
-        <h3>Translational research experience</h3>
-        <p>Taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</p>
-      </div>
-      <div class="row">
-        <h3>Engineering discipline from industry</h3>
-        <p>Clear communication across cross-functional teams, vendors, and customers; data-driven decision making; and modern software development practices</p>
-      </div>
-      <div class="row">
-        <h3>A personal stake</h3>
-        <p>My youngest daughter was born in 2023 with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy. I&rsquo;ve dedicated the remainder of my career to doing everything I can to help children with drug-resistant epilepsy.</p>
-      </div>
-    </div>
+    <details>
+      <summary><h2>About</h2></summary>
+        <div class="rows">
+          <div class="row">
+            <h3>PhD in Electrical and Computer Engineering</h3>
+            <p>With experience designing electrical characterization experiments since graduate school and a decade of R&amp;D in semiconductor device physics</p>
+          </div>
+          <div class="row">
+            <h3>Translational research experience</h3>
+            <p>Taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</p>
+          </div>
+          <div class="row">
+            <h3>Engineering discipline from industry</h3>
+            <p>Clear communication across cross-functional teams, vendors, and customers; data-driven decision making; and modern software development practices</p>
+          </div>
+          <div class="row">
+            <h3>A personal stake</h3>
+            <p>My youngest daughter was born in 2023 with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy. I&rsquo;ve dedicated the remainder of my career to doing everything I can to help children with drug-resistant epilepsy.</p>
+          </div>
+        </div>
+    </details>
   </section>
 
   <section class="content" id="services">
-    <h2>Services</h2>
-    <div class="rows">
-      <div class="row">
-        <h3>Time-series analysis for EEG, iEEG/SEEG, and other physiological signals</h3>
-        <p>Preprocessing, quality control, feature extraction, and event detection</p>
-      </div>
-      <div class="row">
-        <h3>Low-noise measurement system design for bio-signal acquisition</h3>
-        <p>Scoping signal-chain architecture, sensor and amplifier selection, and calibration strategy so your system hits its noise floor and dynamic range targets before you commit capital to hardware.</p>
-      </div>
-      <div class="row">
-        <h3>Data standardization and sharing prep</h3>
-        <p>BIDS/NWB conversion, metadata, validation, and archive-ready datasets</p>
-      </div>
-      <div class="row">
-        <h3>Statistical and simulation modeling</h3>
-        <p>Monte Carlo calibration, power analysis, and model fitting to measured data</p>
-      </div>
-      <div class="row">
-        <h3>Research software</h3>
-        <p>Packaging lab scripts into tested, documented Python libraries</p>
-      </div>
-      <div class="row">
-        <h3>Reproducibility support</h3>
-        <p>Version control, automated tests, containerized environments, and methods documentation</p>
-      </div>
-      <div class="row">
-        <h3>De-identification and database tooling</h3>
-        <p>Built and tested on synthetic data so I never have to handle protected health information</p>
-      </div>
-    </div>
+    <details>
+      <summary><h2>Services</h2></summary>
+        <div class="rows">
+          <div class="row">
+            <h3>Time-series analysis for EEG, iEEG/SEEG, and other physiological signals</h3>
+            <p>Preprocessing, quality control, feature extraction, and event detection</p>
+          </div>
+          <div class="row">
+            <h3>Low-noise measurement system design for bio-signal acquisition</h3>
+            <p>Scoping signal-chain architecture, sensor and amplifier selection, and calibration strategy so your system hits its noise floor and dynamic range targets before you commit capital to hardware.</p>
+          </div>
+          <div class="row">
+            <h3>Data standardization and sharing prep</h3>
+            <p>BIDS/NWB conversion, metadata, validation, and archive-ready datasets</p>
+          </div>
+          <div class="row">
+            <h3>Statistical and simulation modeling</h3>
+            <p>Monte Carlo calibration, power analysis, and model fitting to measured data</p>
+          </div>
+          <div class="row">
+            <h3>Research software</h3>
+            <p>Packaging lab scripts into tested, documented Python libraries</p>
+          </div>
+          <div class="row">
+            <h3>Reproducibility support</h3>
+            <p>Version control, automated tests, containerized environments, and methods documentation</p>
+          </div>
+          <div class="row">
+            <h3>De-identification and database tooling</h3>
+            <p>Built and tested on synthetic data so I never have to handle protected health information</p>
+          </div>
+        </div>
+    </details>
   </section>
 
   <section class="content" id="how-i-work">
-    <h2>How I work</h2>
-    <div class="rows">
-      <div class="row single">
-        <h3>Scoped, milestone-based engagements with defined deliverables and acceptance tests</h3>
-      </div>
-      <div class="row single">
-        <h3>Flexible structure: hourly or daily consulting, or fixed-scope projects</h3>
-      </div>
-      <div class="row single">
-        <h3>Open, well-documented code that your lab owns and can maintain</h3>
-      </div>
-    </div>
+    <details>
+      <summary><h2>How I work</h2></summary>
+        <div class="rows">
+          <div class="row single">
+            <h3>Scoped, milestone-based engagements with defined deliverables and acceptance tests</h3>
+          </div>
+          <div class="row single">
+            <h3>Flexible structure: hourly or daily consulting, or fixed-scope projects</h3>
+          </div>
+          <div class="row single">
+            <h3>Open, well-documented code that your lab owns and can maintain</h3>
+          </div>
+        </div>
+    </details>
   </section>
 </main>
 
@@ -181,6 +204,19 @@
   <a class="email-link" href="#">Contact</a>
 </footer>
 <script>
+/* Open a section when its nav link is used */
+(function () {
+  function openFor(id) {
+    var sec = id && document.getElementById(id);
+    var d = sec && sec.querySelector('details');
+    if (d) d.open = true;
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function () { openFor(a.getAttribute('href').slice(1)); });
+  });
+  window.addEventListener('hashchange', function () { openFor(location.hash.slice(1)); });
+  openFor(location.hash.slice(1));
+})();
 document.querySelectorAll('.email-link').forEach(function (link) {
   link.addEventListener('click', function reveal(e) {
     e.preventDefault();
