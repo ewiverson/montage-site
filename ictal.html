@@ -201,7 +201,7 @@ document.querySelectorAll('.email-link').forEach(function (link) {
   const ctx = canvas.getContext('2d');
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  const BG = '#0d1117', GRAY = '#8b919c';
+  const BG = '#0d1117', GRAY = '#6f7581', INK = '#f2f2f2';
   const STROKE = 1.4;
   const AMP = 3.2;            // wave amplitude, in row pitches
   const ROWS_PER_CAP = 65;    // line density: rows across the tall line's cap height
@@ -264,13 +264,21 @@ document.querySelectorAll('.email-link').forEach(function (link) {
     letterLayer.height = H * dpr;
     const o = letterLayer.getContext('2d');
     o.setTransform(dpr, 0, 0, dpr, 0, 0);
-    o.fillStyle = BG;
     o.textAlign = 'center';
     o.textBaseline = 'alphabetic';
+    o.lineJoin = 'round';
+    /* Empty letters with a thin outline so they stay legible against the field */
+    const paint = (txt, y) => {
+      o.fillStyle = BG;
+      o.fillText(txt, W / 2, y);
+      o.strokeStyle = INK;
+      o.lineWidth = 2.5;
+      o.strokeText(txt, W / 2, y);
+    };
     o.font = fontStr(fsM);
-    o.fillText(LINES[0], W / 2, top + capM);
+    paint(LINES[0], top + capM);
     o.font = fontStr(fsN);
-    o.fillText(LINES[1], W / 2, top + capM + gap + capN);
+    paint(LINES[1], top + capM + gap + capN);
   }
 
   function draw() {
