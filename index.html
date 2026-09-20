@@ -45,6 +45,7 @@
   header a:hover, footer a:hover { color: rgba(255, 255, 255, 0.85); }
 
   #hero { position: relative; margin-top: 24px; }
+  h1 span { display: block; }
   h1 {
     position: absolute; inset: 0; z-index: 1;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -62,7 +63,7 @@
   }
 
   #sim {
-    position: relative; width: 100%; height: 55vh; min-height: 420px;
+    position: relative; width: 100%; height: 55vh; min-height: 480px;
     overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
             mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
@@ -139,7 +140,7 @@
       </div>
       <div class="row">
         <h3>A personal stake</h3>
-        <p>My youngest daughter was born with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy.</p>
+        <p>My youngest daughter was born in 2023 with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy. I&rsquo;ve dedicated the remainder of my career to doing everything I can to help children with drug-resistant epilepsy.</p>
       </div>
     </div>
   </section>
@@ -200,6 +201,19 @@
   <a class="email-link" href="#">Contact</a>
 </footer>
 <script>
+/* Size MONTAGE so it is a little narrower than NEUROSCIENCE, whatever the font */
+(function () {
+  var words = document.querySelectorAll('h1 span'), RATIO = 0.88;
+  function fit() {
+    words[0].style.fontSize = '';
+    var base = parseFloat(getComputedStyle(words[0]).fontSize);
+    words[0].style.fontSize = (base * RATIO * words[1].offsetWidth / words[0].offsetWidth) + 'px';
+  }
+  fit();
+  window.addEventListener('load', fit);
+  window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.load) document.fonts.load('40px Anton').then(fit, fit);
+})();
 document.querySelectorAll('.email-link').forEach(function (link) {
   link.addEventListener('click', function reveal(e) {
     e.preventDefault();
