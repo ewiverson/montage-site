@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Montage Neuroscience</title>
-<meta name="description" content="Research and development supporting the war on drug-resistant epilepsy.">
+<meta name="description" content="Low-noise measurement, EEG and SEEG analysis, and modeling for epilepsy and neuroscience research teams.">
 <link rel="canonical" href="https://montageneuroscience.com/">
 <meta name="theme-color" content="#0d1117">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -15,10 +15,10 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://montageneuroscience.com/">
 <meta property="og:title" content="Montage Neuroscience">
-<meta property="og:description" content="Research and development supporting the war on drug-resistant epilepsy.">
+<meta property="og:description" content="Low-noise measurement, EEG and SEEG analysis, and modeling for epilepsy and neuroscience research teams.">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Montage Neuroscience">
-<meta name="twitter:description" content="Research and development supporting the war on drug-resistant epilepsy.">
+<meta name="twitter:description" content="Low-noise measurement, EEG and SEEG analysis, and modeling for epilepsy and neuroscience research teams.">
 <style>
   @font-face {
     font-family: 'Anton';
@@ -26,7 +26,8 @@
     src: url(/fonts/anton-latin.woff2) format('woff2');
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-padding-top: var(--header-h, 4rem); }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
   body {
     background: #0d1117; color: rgba(255, 255, 255, 0.7);
     font-family: system-ui, -apple-system, sans-serif; line-height: 1.7;
@@ -34,8 +35,11 @@
   a { color: inherit; }
 
   header {
+    position: sticky; top: 0; z-index: 10;
     display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 32px;
-    padding: 24px 20px 0;
+    padding: 16px 20px;
+    background: #0d1117;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
   header a, footer a {
     font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
@@ -44,7 +48,7 @@
   }
   header a:hover, footer a:hover { color: rgba(255, 255, 255, 0.85); }
 
-  #hero { position: relative; margin-top: 24px; }
+  #hero { position: relative; }
   h1 span { display: block; }
   h1 {
     position: absolute; inset: 0; z-index: 1;
@@ -86,7 +90,10 @@
   }
   details[open] summary::after { content: '\2212'; }
   summary:hover::after, summary:hover h2 { color: rgba(255, 255, 255, 0.85); }
-  summary:focus-visible { outline: 1px solid rgba(255, 255, 255, 0.5); outline-offset: 4px; }
+
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.7); outline-offset: 3px;
+  }
 
   section.content h2 {
     font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
@@ -101,7 +108,31 @@
   }
   .row:first-child { padding-top: 0; }
   .row + .row { border-top: 1px solid rgba(255, 255, 255, 0.1); }
-  .row.single h3 { grid-column: 1 / -1; }
+
+  .prose { max-width: 680px; padding-bottom: 32px; }
+  .prose p + p { margin-top: 16px; }
+  .prose .cta { margin-top: 24px; }
+
+  /* Intro under the title, and text-style email links */
+  .intro { max-width: 680px; margin: 0 auto; padding: 48px 20px 0; text-align: center; }
+  .intro p { font-size: 19px; line-height: 1.6; color: rgba(255, 255, 255, 0.85); }
+  .intro .email-link { display: inline-block; margin-top: 20px; }
+  .intro .email-link, .prose .email-link, .contact .email-link {
+    color: #fff; text-decoration: underline; text-underline-offset: 3px;
+  }
+
+  section.contact { padding-top: 72px; }
+  section.contact h2 { margin-bottom: 16px; }
+  section.contact p { max-width: 680px; }
+  .contact-address { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin-top: 12px; }
+  .contact .email-link { font-size: 1.15rem; overflow-wrap: anywhere; }
+  .linklike {
+    font: inherit; font-size: 15px; padding: 0.5rem 0; min-height: 44px; cursor: pointer;
+    color: rgba(255, 255, 255, 0.6); background: none; border: 0; text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .linklike:hover { color: #fff; }
+  #copy-note { min-height: 1.5em; font-size: 14px; color: rgba(255, 255, 255, 0.55); }
 
   @media (max-width: 700px) {
     .row { grid-template-columns: minmax(0, 1fr); }
@@ -139,6 +170,11 @@
   <h1><span>Montage</span> <span>Neuroscience</span></h1>
 </div>
 
+<div class="intro">
+  <p>I help epilepsy and neuroscience research teams get clean signals and analysis they can trust: low-noise measurement, EEG and SEEG data work, and the statistics behind it.</p>
+  <a class="email-link" href="#" data-subject="Free 30-minute call">Ask for a free 30-minute call</a>
+</div>
+
 <main>
   <section class="content" id="about">
     <details>
@@ -146,15 +182,15 @@
         <div class="rows">
           <div class="row">
             <h3>PhD in Electrical and Computer Engineering</h3>
-            <p>With experience designing electrical characterization experiments since graduate school and a decade of R&amp;D in semiconductor device physics</p>
+            <p>With more than a decade of research and development in the semiconductor industry</p>
           </div>
           <div class="row">
             <h3>Translational research experience</h3>
             <p>Taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</p>
           </div>
           <div class="row">
-            <h3>Engineering discipline from industry</h3>
-            <p>Clear communication across cross-functional teams, vendors, and customers; data-driven decision making; and modern software development practices</p>
+            <h3>A decade of measuring small things</h3>
+            <p>I spent more than ten years measuring tiny currents and voltages in semiconductor devices, fitting models to noisy data, and taking results from a bench setup to volume production. The same problems show up in neural recordings, mostly noise and calibration.</p>
           </div>
           <div class="row">
             <h3>A personal stake</h3>
@@ -169,52 +205,95 @@
       <summary><h2>Services</h2></summary>
         <div class="rows">
           <div class="row">
-            <h3>Time-series analysis for EEG, iEEG/SEEG, and other physiological signals</h3>
-            <p>Preprocessing, quality control, feature extraction, and event detection</p>
+            <h3>Low-noise measurement</h3>
+            <p>Grounding, shielding, noise floor, and amplifier and electrode choices for recording setups. I can troubleshoot an existing rig or scope a new one.</p>
           </div>
           <div class="row">
-            <h3>Low-noise measurement system design for bio-signal acquisition</h3>
-            <p>Scoping signal-chain architecture, sensor and amplifier selection, and calibration strategy so your system hits its noise floor and dynamic range targets before you commit capital to hardware.</p>
-          </div>
-          <div class="row">
-            <h3>Data standardization and sharing prep</h3>
-            <p>BIDS/NWB conversion, metadata, validation, and archive-ready datasets</p>
+            <h3>Time-series analysis</h3>
+            <p>Cleaning up long EEG and SEEG recordings and pulling out the features your study needs.</p>
           </div>
           <div class="row">
             <h3>Statistical and simulation modeling</h3>
-            <p>Monte Carlo calibration, power analysis, and model fitting to measured data</p>
+            <p>Fitting models to measured data, power analysis, and Monte Carlo methods.</p>
           </div>
           <div class="row">
-            <h3>Research software</h3>
-            <p>Packaging lab scripts into tested, documented Python libraries</p>
+            <h3>Data standardization</h3>
+            <p>Converting recordings to BIDS or NWB so they&rsquo;re ready to share.</p>
           </div>
           <div class="row">
-            <h3>Reproducibility support</h3>
-            <p>Version control, automated tests, containerized environments, and methods documentation</p>
+            <h3>Research code</h3>
+            <p>Turning lab scripts into tested, documented Python, with version control and reproducible environments so others can run it.</p>
           </div>
           <div class="row">
-            <h3>De-identification and database tooling</h3>
-            <p>Built and tested on synthetic data so I never have to handle protected health information</p>
+            <h3>De-identification tools</h3>
+            <p>Built and tested on synthetic data, so I never handle patient records.</p>
           </div>
         </div>
+    </details>
+  </section>
+
+  <section class="content" id="grant">
+    <details>
+      <summary><h2>Planning a grant application?</h2></summary>
+      <div class="prose">
+        <p>If your aims involve signal analysis, measurement, or data sharing, let&rsquo;s talk for 30 minutes, free. Bring a rough aim, a description of your data, or a problem you&rsquo;re stuck on. I&rsquo;ll tell you honestly whether I can help and how I&rsquo;d approach it.</p>
+        <p>If it makes sense, I can help you scope my part of the work: what it involves, how many days it takes, and what you&rsquo;d get. I&rsquo;ll write the methods and budget language for those pieces and send you a biosketch and a short letter for the application.</p>
+        <p class="cta"><a class="email-link" href="#" data-subject="Free 30-minute call">Ask for a free call</a></p>
+      </div>
     </details>
   </section>
 
   <section class="content" id="how-i-work">
     <details>
       <summary><h2>How I work</h2></summary>
+      <div class="prose">
+        <p>Before I start, we agree on what you&rsquo;re getting: the deliverable, the file format, and how we&rsquo;ll check that it works. Small projects can be a fixed price. Open-ended work is hourly or by the day.</p>
+        <p>The code is yours. I document it well enough that someone else in your lab can pick it up.</p>
+      </div>
+    </details>
+  </section>
+
+  <!--
+    PROJECT EXAMPLES (placeholder, not rendered). Uncomment and fill in 2 or 3 when ready.
+    Each one: title, problem, what I did, result.
+
+  <section class="content" id="projects">
+    <details>
+      <summary><h2>Selected projects</h2></summary>
         <div class="rows">
-          <div class="row single">
-            <h3>Scoped, milestone-based engagements with defined deliverables and acceptance tests</h3>
+          <div class="row">
+            <h3>Project title</h3>
+            <p>Problem: one sentence. What I did: one sentence. Result: one sentence.</p>
           </div>
-          <div class="row single">
-            <h3>Flexible structure: hourly or daily consulting, or fixed-scope projects</h3>
-          </div>
-          <div class="row single">
-            <h3>Open, well-documented code that your lab owns and can maintain</h3>
+          <div class="row">
+            <h3>Project title</h3>
+            <p>Problem: one sentence. What I did: one sentence. Result: one sentence.</p>
           </div>
         </div>
     </details>
+  </section>
+  -->
+
+  <section class="content" id="talks">
+    <details>
+      <summary><h2>Talking with epilepsy teams</h2></summary>
+      <div class="prose">
+        <p>If you work at a company building devices, diagnostics, or treatments for epilepsy, I&rsquo;m happy to meet with your team, by video or in person if we&rsquo;re close, and tell you what drug-resistant epilepsy looks like from the family side.</p>
+        <p>I can talk about how we learned what our options were, what the decisions felt like, what daily life with monitoring and devices is like, and what I wish the people building these tools understood. Sessions are usually 30 to 60 minutes. A first conversation is free.</p>
+        <p>I&rsquo;m a parent and an engineer, not a clinician, so I speak only about our own experience and not about medical advice.</p>
+        <p class="cta"><a class="email-link" href="#" data-subject="Talking with our team">Ask me to talk with your team</a></p>
+      </div>
+    </details>
+  </section>
+
+  <section class="content contact" id="contact">
+    <h2>Get in touch</h2>
+    <p>Planning a grant, fighting a noisy recording, or want me to talk with your team? Send me an email. I usually reply within two business days.</p>
+    <p class="contact-address" data-nosnippet>
+      <a class="email-link" href="#" data-show-address>Email me</a>
+      <button type="button" id="copy-email" class="linklike">Copy address</button>
+    </p>
+    <p id="copy-note" role="status" aria-live="polite"></p>
   </section>
 </main>
 
@@ -250,17 +329,70 @@
   window.addEventListener('hashchange', function () { openFor(location.hash.slice(1)); });
   openFor(location.hash.slice(1));
 })();
-document.querySelectorAll('.email-link').forEach(function (link) {
-  link.addEventListener('click', function reveal(e) {
-    e.preventDefault();
-    var addr = atob('ZXJpY0Btb250YWdlbmV1cm9zY2llbmNlLmNvbQ==');
-    document.querySelectorAll('.email-link').forEach(function (el) {
-      el.textContent = addr;
-      el.href = 'mailto:' + addr;
-      el.removeEventListener('click', reveal);
-    });
+/* Keep the sticky header height available to CSS (scroll-padding-top) */
+(function () {
+  var h = document.querySelector('header');
+  function set() { document.documentElement.style.setProperty('--header-h', h.offsetHeight + 'px'); }
+  set();
+  window.addEventListener('load', set);
+  window.addEventListener('resize', set);
+})();
+/* Email: the address is stored encoded and decoded only when a link is used
+   (links that display the address are filled in right away). */
+(function () {
+  var addr = null;
+  function address() {
+    if (addr === null) addr = atob('ZXJpY0Btb250YWdlbmV1cm9zY2llbmNlLmNvbQ==');
+    return addr;
+  }
+  function arm(a) {
+    var subject = a.getAttribute('data-subject');
+    a.href = 'mailto:' + address() + (subject ? '?subject=' + encodeURIComponent(subject) : '');
+    if (a.hasAttribute('data-show-address')) a.textContent = address();
+  }
+  function armFrom(e) {
+    var a = e.target.closest && e.target.closest('a.email-link');
+    if (a) arm(a);
+  }
+  ['pointerover', 'focusin', 'touchstart', 'click', 'auxclick', 'contextmenu'].forEach(function (t) {
+    document.addEventListener(t, armFrom, true);
   });
-});
+  document.querySelectorAll('a.email-link[data-show-address]').forEach(arm);
+
+  var copy = document.getElementById('copy-email');
+  var note = document.getElementById('copy-note');
+  var noteTimer;
+  function say(msg) {
+    clearTimeout(noteTimer);
+    note.textContent = '';
+    noteTimer = setTimeout(function () {
+      note.textContent = msg;
+      noteTimer = setTimeout(function () { note.textContent = ''; }, 5000);
+    }, 50);
+  }
+  function fallbackCopy(text) {
+    var t = document.createElement('textarea');
+    t.value = text; t.setAttribute('readonly', '');
+    t.style.position = 'absolute'; t.style.left = '-9999px';
+    document.body.appendChild(t); t.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (err) {}
+    document.body.removeChild(t);
+    return ok;
+  }
+  copy.addEventListener('click', function () {
+    var text = address();
+    var fail = 'Could not copy. Please select the address above.';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () { say('Address copied.'); },
+        function () { say(fallbackCopy(text) ? 'Address copied.' : fail); }
+      );
+    } else {
+      say(fallbackCopy(text) ? 'Address copied.' : fail);
+    }
+  });
+})();
 </script>
 <script>
 'use strict';
