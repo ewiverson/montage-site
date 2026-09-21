@@ -4,10 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Montage Neuroscience</title>
-<meta name="description" content="Low-noise measurement, EEG and SEEG analysis, and modeling for epilepsy and neuroscience research teams.">
+<meta name="description" content="Low-noise measurement system design, EEG and SEEG time-series analysis, and statistical modeling for epilepsy and neuroscience research.">
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://montageneuroscience.com/">
-<meta name="theme-color" content="#0d1117">
+<meta name="theme-color" content="#f7f8fa">
+<script>
+/* Light is the default; a saved choice (shared by both pages) overrides it. Set before paint. */
+try { document.documentElement.dataset.theme = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'; }
+catch (e) { document.documentElement.dataset.theme = 'light'; }
+</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
@@ -16,21 +21,49 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://montageneuroscience.com/">
 <meta property="og:title" content="Montage Neuroscience">
-<meta property="og:description" content="Low-noise measurement, EEG and SEEG analysis, and modeling for epilepsy and neuroscience research teams.">
+<meta property="og:description" content="Low-noise measurement system design, EEG and SEEG time-series analysis, and statistical modeling for epilepsy and neuroscience research.">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Montage Neuroscience">
-<meta name="twitter:description" content="Low-noise measurement, EEG and SEEG analysis, and modeling for epilepsy and neuroscience research teams.">
+<meta name="twitter:description" content="Low-noise measurement system design, EEG and SEEG time-series analysis, and statistical modeling for epilepsy and neuroscience research.">
 <style>
   @font-face {
     font-family: 'Anton';
     font-style: normal; font-weight: 400; font-display: swap;
     src: url(/fonts/anton-latin.woff2) format('woff2');
   }
+  :root {
+    color-scheme: light;
+    --bg: #f7f8fa; --bg-rgb: 247, 248, 250;
+    --strong: #0d1117;
+    --c-body: rgba(13, 17, 23, 0.78);
+    --c-muted: rgba(13, 17, 23, 0.6);
+    --c-muted2: rgba(13, 17, 23, 0.65);
+    --c-hover: rgba(13, 17, 23, 0.9);
+    --c-faint: rgba(13, 17, 23, 0.5);
+    --c-line: rgba(13, 17, 23, 0.12);
+    --c-line-soft: rgba(13, 17, 23, 0.1);
+    --c-focus: rgba(13, 17, 23, 0.7);
+    --field: #7a808c; --outline: #0d1117;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0d1117; --bg-rgb: 13, 17, 23;
+    --strong: #fff;
+    --c-body: rgba(255, 255, 255, 0.7);
+    --c-muted: rgba(255, 255, 255, 0.45);
+    --c-muted2: rgba(255, 255, 255, 0.6);
+    --c-hover: rgba(255, 255, 255, 0.85);
+    --c-faint: rgba(255, 255, 255, 0.35);
+    --c-line: rgba(255, 255, 255, 0.1);
+    --c-line-soft: rgba(255, 255, 255, 0.08);
+    --c-focus: rgba(255, 255, 255, 0.7);
+    --field: #6f7581; --outline: #f2f2f2;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-padding-top: var(--header-h, 4rem); }
   @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
   body {
-    background: #0d1117; color: rgba(255, 255, 255, 0.7);
+    background: var(--bg); color: var(--c-body);
     font-family: system-ui, -apple-system, sans-serif; line-height: 1.7;
   }
   a { color: inherit; }
@@ -39,22 +72,22 @@
     position: sticky; top: 0; z-index: 10;
     display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 32px;
     padding: 16px 20px;
-    background: #0d1117;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg);
+    border-bottom: 1px solid var(--c-line-soft);
   }
   header a, footer a {
     font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45); text-decoration: none;
+    color: var(--c-muted); text-decoration: none;
     transition: color 0.3s;
   }
-  header a:hover, footer a:hover { color: rgba(255, 255, 255, 0.85); }
+  header a:hover, footer a:hover { color: var(--c-hover); }
 
 
 
   main { max-width: 960px; margin: 0 auto; padding: 64px 20px 0; }
   section.content { scroll-margin-top: 24px; }
-  section.content details { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-  section.content:first-child details { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  section.content details { border-bottom: 1px solid var(--c-line); }
+  section.content:first-child details { border-top: 1px solid var(--c-line); }
 
   summary {
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -63,39 +96,37 @@
   summary::-webkit-details-marker { display: none; }
   summary::after {
     content: '+'; font-size: 22px; line-height: 1;
-    color: rgba(255, 255, 255, 0.45); transition: color 0.3s;
+    color: var(--c-muted); transition: color 0.3s;
   }
   details[open] summary::after { content: '\2212'; }
-  summary:hover::after, summary:hover h2 { color: rgba(255, 255, 255, 0.85); }
+  summary:hover::after, summary:hover h2 { color: var(--c-hover); }
 
   a:focus-visible, button:focus-visible, summary:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.7); outline-offset: 3px;
+    outline: 2px solid var(--c-focus); outline-offset: 3px;
   }
 
   section.content h2 {
     font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45); transition: color 0.3s;
+    color: var(--c-muted); transition: color 0.3s;
   }
-  section.content h3 { font-size: 17px; font-weight: 500; line-height: 1.4; color: #fff; }
+  section.content h3 { font-size: 17px; font-weight: 500; line-height: 1.4; color: var(--strong); }
 
-  .rows { padding-bottom: 20px; }
+  .rows { padding-bottom: 0; }
   .row {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
     gap: 4px 32px; align-items: baseline; padding: 24px 0;
   }
   .row:first-child { padding-top: 0; }
-  .row + .row { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .row + .row { border-top: 1px solid var(--c-line); }
 
-  .prose { max-width: 680px; padding-bottom: 32px; }
+  .prose { max-width: 680px; }
   .prose p + p { margin-top: 16px; }
-  .prose .cta { margin-top: 24px; }
 
-  /* Intro under the title, and text-style email links */
-  .intro { max-width: 680px; margin: 0 auto; padding: 48px 20px 0; text-align: center; }
-  .intro p { font-size: 19px; line-height: 1.6; color: rgba(255, 255, 255, 0.85); }
-  .intro .email-link { display: inline-block; margin-top: 20px; }
-  .intro .email-link, .prose .email-link, .contact .email-link {
-    color: #fff; text-decoration: underline; text-underline-offset: 3px;
+  /* Text-style email links at the end of each section */
+  .section-cta { padding-bottom: 32px; }
+  .prose .section-cta { margin-top: 24px; }
+  .section-cta .email-link, .contact .email-link {
+    color: var(--strong); text-decoration: underline; text-underline-offset: 3px;
   }
 
   section.contact { padding-top: 72px; }
@@ -105,11 +136,11 @@
   .contact .email-link { font-size: 1.15rem; overflow-wrap: anywhere; }
   .linklike {
     font: inherit; font-size: 15px; padding: 0.5rem 0; min-height: 44px; cursor: pointer;
-    color: rgba(255, 255, 255, 0.6); background: none; border: 0; text-decoration: underline;
+    color: var(--c-muted2); background: none; border: 0; text-decoration: underline;
     text-underline-offset: 3px;
   }
-  .linklike:hover { color: #fff; }
-  #copy-note { min-height: 1.5em; font-size: 14px; color: rgba(255, 255, 255, 0.55); }
+  .linklike:hover { color: var(--strong); }
+  #copy-note { min-height: 1.5em; font-size: 14px; color: var(--c-muted2); }
 
   @media (max-width: 700px) {
     .row { grid-template-columns: minmax(0, 1fr); }
@@ -117,10 +148,18 @@
 
   footer {
     max-width: 960px; margin: 96px auto 0; padding: 24px 20px 40px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--c-line);
     display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-    font-size: 13px; color: rgba(255, 255, 255, 0.35);
+    font-size: 13px; color: var(--c-faint);
   }
+
+  .footer-switches { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+  footer .theme-toggle {
+    font: inherit; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--c-muted); background: none; border: 0; padding: 0; cursor: pointer;
+    transition: color 0.3s;
+  }
+  footer .theme-toggle:hover { color: var(--c-hover); }
 
   .sr-only {
     position: absolute; width: 1px; height: 1px; overflow: hidden;
@@ -145,11 +184,6 @@
   <canvas id="field" role="img" aria-label="Montage Neuroscience, spelled out in EEG-style traces"></canvas>
 </div>
 
-<div class="intro">
-  <p>I help epilepsy and neuroscience research teams get clean signals and analysis they can trust: low-noise measurement, EEG and SEEG data work, and the statistics behind it.</p>
-  <a class="email-link" href="#" data-subject="Free 30-minute call">Ask for a free 30-minute call</a>
-</div>
-
 <main>
   <section class="content" id="about">
     <details>
@@ -164,14 +198,15 @@
             <p>Taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</p>
           </div>
           <div class="row">
-            <h3>A decade of measuring small things</h3>
-            <p>I spent more than ten years measuring tiny currents and voltages in semiconductor devices, fitting models to noisy data, and taking results from a bench setup to volume production. The same problems show up in neural recordings, mostly noise and calibration.</p>
+            <h3>Electrical characterization and noise analysis</h3>
+            <p>Extensive experience in low-current, low-voltage, and low-noise electrical measurement, SPICE and circuit modeling, and statistical model calibration using Monte Carlo simulation. These methods carry over to biopotential acquisition and to the analysis of intracranial EEG and other electrophysiological signals.</p>
           </div>
           <div class="row">
             <h3>A personal stake</h3>
             <p>My youngest daughter was born in 2023 with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy. I&rsquo;ve dedicated the remainder of my career to doing everything I can to help children with drug-resistant epilepsy.</p>
           </div>
         </div>
+        <p class="section-cta"><a class="email-link" href="#" data-subject="Consulting inquiry">Inquire about consulting</a></p>
     </details>
   </section>
 
@@ -180,40 +215,41 @@
       <summary><h2>Services</h2></summary>
         <div class="rows">
           <div class="row">
-            <h3>Low-noise measurement</h3>
-            <p>Grounding, shielding, noise floor, and amplifier and electrode choices for recording setups. I can troubleshoot an existing rig or scope a new one.</p>
+            <h3>Low-noise measurement system design for biopotential acquisition</h3>
+            <p>Scoping of signal-chain architecture, electrode and amplifier selection, input-referred noise budgeting, and calibration strategy, so that noise floor and dynamic range targets are validated before hardware is committed.</p>
           </div>
           <div class="row">
-            <h3>Time-series analysis</h3>
-            <p>Cleaning up long EEG and SEEG recordings and pulling out the features your study needs.</p>
+            <h3>Time-series analysis of EEG, iEEG/SEEG, and other physiological signals</h3>
+            <p>Preprocessing, artifact rejection, and quality control; spectral and connectivity feature extraction; and event detection, for example of interictal epileptiform discharges and seizures.</p>
           </div>
           <div class="row">
             <h3>Statistical and simulation modeling</h3>
-            <p>Fitting models to measured data, power analysis, and Monte Carlo methods.</p>
+            <p>Statistical model calibration, Monte Carlo simulation, power analysis, and parameter estimation from measured data.</p>
           </div>
           <div class="row">
-            <h3>Data standardization</h3>
-            <p>Converting recordings to BIDS or NWB so they&rsquo;re ready to share.</p>
+            <h3>Data standardization and sharing preparation</h3>
+            <p>BIDS (including iEEG-BIDS) and NWB conversion, metadata annotation, validation, and preparation of archive-ready datasets in support of NIH data management and sharing requirements.</p>
           </div>
           <div class="row">
-            <h3>Research code</h3>
-            <p>Turning lab scripts into tested, documented Python, with version control and reproducible environments so others can run it.</p>
+            <h3>Research software and reproducibility</h3>
+            <p>Refactoring of laboratory analysis code into tested, documented Python packages, with version control, automated testing, and containerized environments.</p>
           </div>
           <div class="row">
-            <h3>De-identification tools</h3>
-            <p>Built and tested on synthetic data, so I never handle patient records.</p>
+            <h3>De-identification and database tooling</h3>
+            <p>Development and validation of de-identification and database tools using synthetic data, so that no protected health information is accessed.</p>
           </div>
         </div>
+        <p class="section-cta"><a class="email-link" href="#" data-subject="Technical requirements">Discuss your technical requirements</a></p>
     </details>
   </section>
 
   <section class="content" id="grant">
     <details>
-      <summary><h2>Planning a grant application?</h2></summary>
+      <summary><h2>Contributing to grant applications</h2></summary>
       <div class="prose">
-        <p>If your aims involve signal analysis, measurement, or data sharing, let&rsquo;s talk for 30 minutes, free. Bring a rough aim, a description of your data, or a problem you&rsquo;re stuck on. I&rsquo;ll tell you honestly whether I can help and how I&rsquo;d approach it.</p>
-        <p>If it makes sense, I can help you scope my part of the work: what it involves, how many days it takes, and what you&rsquo;d get. I&rsquo;ll write the methods and budget language for those pieces and send you a biosketch and a short letter for the application.</p>
-        <p class="cta"><a class="email-link" href="#" data-subject="Free 30-minute call">Ask for a free call</a></p>
+        <p>For applications with aims involving signal analysis, measurement system design, or data sharing, I offer a complimentary 30-minute scoping call. A rough aim, a description of the data, or a specific technical question is sufficient preparation. I will assess whether I can contribute and outline a proposed technical approach.</p>
+        <p>Where there is a fit, I can define the scope of my contribution (tasks, level of effort, and deliverables), draft the corresponding methods and budget justification text, and provide a biosketch and supporting letter for the application.</p>
+        <p class="section-cta"><a class="email-link" href="#" data-subject="Free 30-minute scoping call">Request a free scoping call</a></p>
       </div>
     </details>
   </section>
@@ -222,15 +258,16 @@
     <details>
       <summary><h2>How I work</h2></summary>
       <div class="prose">
-        <p>Before I start, we agree on what you&rsquo;re getting: the deliverable, the file format, and how we&rsquo;ll check that it works. Small projects can be a fixed price. Open-ended work is hourly or by the day.</p>
-        <p>The code is yours. I document it well enough that someone else in your lab can pick it up.</p>
+        <p>Engagements are scoped in advance with defined milestones, deliverables, and acceptance criteria. Pricing is fixed-scope for well-defined projects and hourly or daily for open-ended work.</p>
+        <p>Delivered code is open, documented, version-controlled, and owned by your laboratory.</p>
+        <p class="section-cta"><a class="email-link" href="#" data-subject="Project estimate request">Request a project estimate</a></p>
       </div>
     </details>
   </section>
 
   <!--
     PROJECT EXAMPLES (placeholder, not rendered). Uncomment and fill in 2 or 3 when ready.
-    Each one: title, problem, what I did, result.
+    Each one: title, problem, approach, result.
 
   <section class="content" id="projects">
     <details>
@@ -238,11 +275,11 @@
         <div class="rows">
           <div class="row">
             <h3>Project title</h3>
-            <p>Problem: one sentence. What I did: one sentence. Result: one sentence.</p>
+            <p>Problem: one sentence. Approach: one sentence. Result: one sentence.</p>
           </div>
           <div class="row">
             <h3>Project title</h3>
-            <p>Problem: one sentence. What I did: one sentence. Result: one sentence.</p>
+            <p>Problem: one sentence. Approach: one sentence. Result: one sentence.</p>
           </div>
         </div>
     </details>
@@ -251,19 +288,19 @@
 
   <section class="content" id="talks">
     <details>
-      <summary><h2>Talking with epilepsy teams</h2></summary>
+      <summary><h2>Caregiver perspective for development and research teams</h2></summary>
       <div class="prose">
-        <p>If you work at a company building devices, diagnostics, or treatments for epilepsy, I&rsquo;m happy to meet with your team, by video or in person if we&rsquo;re close, and tell you what drug-resistant epilepsy looks like from the family side.</p>
-        <p>I can talk about how we learned what our options were, what the decisions felt like, what daily life with monitoring and devices is like, and what I wish the people building these tools understood. Sessions are usually 30 to 60 minutes. A first conversation is free.</p>
-        <p>I&rsquo;m a parent and an engineer, not a clinician, so I speak only about our own experience and not about medical advice.</p>
-        <p class="cta"><a class="email-link" href="#" data-subject="Talking with our team">Ask me to talk with your team</a></p>
+        <p>I am the parent of a child with drug-resistant epilepsy and am available to meet with teams that rarely have direct contact with patients or caregivers. This includes engineering, data science, and modeling groups, device and diagnostic developers, translational researchers, and regulatory or commercial staff.</p>
+        <p>Topics include how diagnostic and treatment options were identified and weighed, the practical realities of long-term monitoring and of implanted or wearable devices, and what caregivers would want development teams to understand. Sessions typically last 30 to 60 minutes, and an initial conversation is provided at no charge.</p>
+        <p>I am a parent and an engineer, not a clinician. I speak only from our family&rsquo;s experience and do not provide medical advice.</p>
+        <p class="section-cta"><a class="email-link" href="#" data-subject="Speaking with our team">Invite me to speak with your team</a></p>
       </div>
     </details>
   </section>
 
   <section class="content contact" id="contact">
     <h2>Get in touch</h2>
-    <p>Planning a grant, fighting a noisy recording, or want me to talk with your team? Send me an email. I usually reply within two business days.</p>
+    <p>Planning a grant application, need help with data analysis, or interested in a session with your team? Please send an email. I typically reply within two business days.</p>
     <p class="contact-address" data-nosnippet>
       <a class="email-link" href="#" data-show-address>Email me</a>
       <button type="button" id="copy-email" class="linklike">Copy address</button>
@@ -274,7 +311,10 @@
 
 <footer data-nosnippet>
   <span>&copy; Montage Neuroscience</span>
-  <a href="/">Alt: neural sim</a>
+  <span class="footer-switches">
+    <button type="button" id="theme-toggle" class="theme-toggle">Dark mode</button>
+    <a href="/">Alt: neural sim</a>
+  </span>
   <a class="email-link" href="#">Contact</a>
 </footer>
 <script>
@@ -290,6 +330,23 @@
   });
   window.addEventListener('hashchange', function () { openFor(location.hash.slice(1)); });
   openFor(location.hash.slice(1));
+})();
+/* Light/dark switch (light by default; choice is remembered) */
+(function () {
+  var root = document.documentElement, btn = document.getElementById('theme-toggle');
+  function sync() {
+    btn.textContent = root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode';
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.content = getComputedStyle(root).getPropertyValue('--bg').trim();
+  }
+  sync();
+  btn.addEventListener('click', function () {
+    var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    sync();
+    window.dispatchEvent(new Event('themechange'));
+  });
 })();
 /* Keep the sticky header height available to CSS (scroll-padding-top) */
 (function () {
@@ -363,7 +420,13 @@
   const ctx = canvas.getContext('2d');
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  const BG = '#0d1117', GRAY = '#6f7581', INK = '#f2f2f2';
+  let BG, GRAY, INK;   // read from the theme's CSS variables
+  function readTheme() {
+    const cs = getComputedStyle(document.documentElement);
+    BG = cs.getPropertyValue('--bg').trim();
+    GRAY = cs.getPropertyValue('--field').trim();
+    INK = cs.getPropertyValue('--outline').trim();
+  }
   const STROKE = 1.4;
   const AMP = 3.2;            // wave amplitude, in row pitches
   const ROWS_PER_CAP = 65;    // line density: rows across the tall line's cap height
@@ -394,7 +457,7 @@
   }
   const WAVE_PERIOD = 26;
 
-  let W, H, pitch, letterLayer, lastW = 0;
+  let W, H, pitch, letterLayer, params = null, lastW = 0;
 
   /* Size the hero to the nav + two lines of text, and paint the text as a background-colored cut-out layer */
   function buildMask() {
@@ -449,13 +512,16 @@
     const ROWS = Math.floor(H / pitch) + 2;
     const N = Math.round(W / 2.55);   // ~2.55px per sample
     const amp = pitch * AMP;
+    if (!params || params.length !== ROWS) {
+      params = Array.from({ length: ROWS }, () => ({ swPhase: Math.random(), swJitter: 0.85 + Math.random() * 0.3 }));
+    }
     ctx.lineJoin = 'round';
     ctx.lineWidth = STROKE;
 
     for (let r = 0; r < ROWS; r++) {
       const baseline = r * pitch;
       const bottomY = baseline + pitch * 0.9;
-      const swPhase = Math.random(), swJitter = 0.85 + Math.random() * 0.3;
+      const swPhase = params[r].swPhase, swJitter = params[r].swJitter;
       const period = WAVE_PERIOD * swJitter;
 
       const pts = [];
@@ -485,7 +551,10 @@
     ctx.drawImage(letterLayer, 0, 0, W, H);
   }
 
-  function rebuild() { buildMask(); draw(); lastW = W; }
+  function rebuild() { readTheme(); params = null; buildMask(); draw(); lastW = W; }
+
+  /* Same pattern, new colors */
+  window.addEventListener('themechange', function () { readTheme(); buildMask(); draw(); });
 
   /* Anton is a web font: wait for it before measuring/masking */
   if (FONT.family.startsWith('Anton') && document.fonts && document.fonts.load) {
