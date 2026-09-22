@@ -142,6 +142,16 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   .row:first-child { padding-top: 0; }
   .row + .row { border-top: 1px solid var(--c-line); }
 
+  .about-photos {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
+    max-width: 736px; padding-bottom: 32px;
+  }
+  .about-photos img {
+    display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover;
+    border-radius: 4px; background: var(--c-line-soft);
+  }
+  .about-photos picture:first-child img { object-position: 40% 20%; }
+
   .prose { max-width: 680px; }
   .prose p + p { margin-top: 16px; }
 
@@ -167,6 +177,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
 
   @media (max-width: 700px) {
     .row { grid-template-columns: minmax(0, 1fr); }
+    .about-photos { gap: 12px; }
   }
 
   footer {
@@ -213,6 +224,16 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   <section class="content" id="about">
     <details>
       <summary><h2>About</h2></summary>
+      <div class="about-photos">
+        <picture>
+          <source type="image/webp" srcset="/images/portrait.webp">
+          <img src="/images/portrait.jpg" width="720" height="612" loading="lazy" decoding="async" alt="Portrait of the founder of Montage Neuroscience, smiling, in a navy blazer and light blue shirt">
+        </picture>
+        <picture>
+          <source type="image/webp" srcset="/images/hospital-blurred.webp">
+          <img src="/images/hospital-blurred.jpg" width="720" height="960" loading="lazy" decoding="async" alt="A father resting in a hospital bed with his young daughter asleep on his chest after her surgery; her face is softened for privacy">
+        </picture>
+      </div>
         <div class="rows">
           <div class="row">
             <h3>PhD in Electrical and Computer Engineering</h3>
