@@ -142,15 +142,13 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   .row:first-child { padding-top: 0; }
   .row + .row { border-top: 1px solid var(--c-line); }
 
-  .about-photos {
-    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
-    max-width: 736px; padding-bottom: 32px;
-  }
-  .about-photos img {
+  .about-photos { max-width: 240px; padding-bottom: 32px; }
+  .about-photos img, .about-photo-bottom img {
     display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover;
     border-radius: 4px; background: var(--c-line-soft);
   }
-  .about-photos picture:first-child img { object-position: 40% 20%; }
+  .about-photos img { object-position: 40% 20%; }
+  .about-photo-bottom { display: block; max-width: 280px; margin: 24px 0 8px; }
 
   .prose { max-width: 680px; }
   .prose p + p { margin-top: 16px; }
@@ -177,7 +175,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
 
   @media (max-width: 700px) {
     .row { grid-template-columns: minmax(0, 1fr); }
-    .about-photos { gap: 12px; }
+    .about-photos, .about-photo-bottom { max-width: 200px; }
   }
 
   footer {
@@ -229,10 +227,6 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
           <source type="image/webp" srcset="/images/portrait.webp">
           <img src="/images/portrait.jpg" width="720" height="612" loading="lazy" decoding="async" alt="Portrait of the founder of Montage Neuroscience, smiling, in a navy blazer and light blue shirt">
         </picture>
-        <picture>
-          <source type="image/webp" srcset="/images/hospital-blurred.webp">
-          <img src="/images/hospital-blurred.jpg" width="720" height="960" loading="lazy" decoding="async" alt="A father resting in a hospital bed with his young daughter asleep on his chest after her surgery; her face is softened for privacy">
-        </picture>
       </div>
         <div class="rows">
           <div class="row">
@@ -252,6 +246,10 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
             <p>My youngest daughter was born in 2023 with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy. I&rsquo;ve dedicated the remainder of my career to doing everything I can to help children with drug-resistant epilepsy.</p>
           </div>
         </div>
+        <picture class="about-photo-bottom">
+          <source type="image/webp" srcset="/images/hospital-blurred.webp">
+          <img src="/images/hospital-blurred.jpg" width="720" height="960" loading="lazy" decoding="async" alt="A father resting in a hospital bed with his young daughter asleep on his chest after her surgery; her face is softened for privacy">
+        </picture>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Consulting inquiry">Inquire about consulting</a></p>
     </details>
   </section>
@@ -337,7 +335,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
       <summary><h2>Caregiver perspective for development and research teams</h2></summary>
       <div class="prose">
         <p>I am the parent of a child with drug-resistant epilepsy and am available to meet with teams that rarely have direct contact with patients or caregivers. This includes engineering, data science, and modeling groups, device and diagnostic developers, translational researchers, and regulatory or commercial staff.</p>
-        <p>Topics include how diagnostic and treatment options were identified and weighed, the practical realities of long-term monitoring and of implanted or wearable devices, and what caregivers would want development teams to understand. Sessions typically last 30 to 60 minutes, and an initial conversation is provided at no charge.</p>
+        <p>I share what it was like to search for answers for our daughter, how each decision was actually made, and what has changed for her because of research and engineering like yours. Many teams never meet the children they are working for. Seeing that end goal can provide meaning and drive through the difficult stretches of work.</p>
         <p>I am a parent and an engineer, not a clinician. I speak only from our family&rsquo;s experience and do not provide medical advice.</p>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Speaking with our team">Invite me to speak with your team</a></p>
       </div>
