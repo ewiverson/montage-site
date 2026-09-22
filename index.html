@@ -142,13 +142,34 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   .row:first-child { padding-top: 0; }
   .row + .row { border-top: 1px solid var(--c-line); }
 
-  .about-photos { max-width: 240px; padding-bottom: 32px; }
+  .about-photos { max-width: 240px; }
+  .about-photo-bottom { display: block; max-width: 240px; }
+  .about-photos picture, .about-photo-bottom {
+    display: block; padding: 8px; border: 1px solid var(--c-line);
+    border-radius: 6px; background: var(--bg);
+  }
   .about-photos img, .about-photo-bottom img {
     display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover;
-    border-radius: 4px; background: var(--c-line-soft);
+    border-radius: 2px; background: var(--c-line-soft);
   }
   .about-photos img { object-position: 40% 20%; }
-  .about-photo-bottom { display: block; max-width: 280px; margin: 24px 0 8px; }
+
+  .about-intro { font-size: 19px; line-height: 1.6; color: var(--c-hover); max-width: 680px; margin-bottom: 24px; }
+
+  .about-layout { padding-bottom: 32px; }
+
+  /* One text column; both photos stacked in a column to its right once there is room.
+     Below 701px: no grid, so the photos simply sit above and below the text in source order. */
+  @media (min-width: 701px) {
+    .about-layout {
+      display: grid; grid-template-columns: minmax(0, 1fr) 240px;
+      grid-template-areas: "text photo1" "text photo2";
+      gap: 32px; align-items: start;
+    }
+    .about-text { grid-area: text; }
+    .about-photos { grid-area: photo1; }
+    .about-photo-bottom { grid-area: photo2; }
+  }
 
   .prose { max-width: 680px; }
   .prose p + p { margin-top: 16px; }
@@ -175,7 +196,9 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
 
   @media (max-width: 700px) {
     .row { grid-template-columns: minmax(0, 1fr); }
-    .about-photos, .about-photo-bottom { max-width: 200px; }
+    .about-photos, .about-photo-bottom { max-width: 200px; margin: 0 auto; }
+    .about-photos { margin-bottom: 24px; }
+    .about-photo-bottom { margin-top: 24px; }
   }
 
   footer {
@@ -222,34 +245,39 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   <section class="content" id="about">
     <details>
       <summary><h2>About</h2></summary>
-      <div class="about-photos">
-        <picture>
-          <source type="image/webp" srcset="/images/portrait.webp">
-          <img src="/images/portrait.jpg" width="720" height="612" loading="lazy" decoding="async" alt="Portrait of the founder of Montage Neuroscience, smiling, in a navy blazer and light blue shirt">
-        </picture>
-      </div>
-        <div class="rows">
-          <div class="row">
-            <h3>PhD in Electrical and Computer Engineering</h3>
-            <p>With more than a decade of research and development in the semiconductor industry</p>
-          </div>
-          <div class="row">
-            <h3>Translational research experience</h3>
-            <p>Taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</p>
-          </div>
-          <div class="row">
-            <h3>Electrical characterization and noise analysis</h3>
-            <p>Extensive experience in low-current, low-voltage, and low-noise electrical measurement, SPICE and circuit modeling, and statistical model calibration using Monte Carlo simulation. These methods carry over to biopotential acquisition and to the analysis of intracranial EEG and other electrophysiological signals.</p>
-          </div>
-          <div class="row">
-            <h3>A personal stake</h3>
-            <p>My youngest daughter was born in 2023 with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy. I&rsquo;ve dedicated the remainder of my career to doing everything I can to help children with drug-resistant epilepsy.</p>
+      <div class="about-layout">
+        <div class="about-photos">
+          <picture>
+            <source type="image/webp" srcset="/images/portrait.webp">
+            <img src="/images/portrait.jpg" width="720" height="612" loading="lazy" decoding="async" alt="Portrait of Eric Iverson, founder of Montage Neuroscience, smiling, in a navy blazer and light blue shirt">
+          </picture>
+        </div>
+        <div class="about-text">
+          <p class="about-intro">Hi, I&rsquo;m Eric Iverson, an electrical engineer whose life was changed forever by his daughter&rsquo;s drug-resistant epilepsy. Now I dedicate my work to helping engineers and researchers who are working to build a better future for families like mine.</p>
+          <div class="rows">
+            <div class="row">
+              <h3>PhD in Electrical and Computer Engineering</h3>
+              <p>With more than a decade of research and development in the semiconductor industry</p>
+            </div>
+            <div class="row">
+              <h3>Translational research experience</h3>
+              <p>Taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</p>
+            </div>
+            <div class="row">
+              <h3>Electrical characterization and noise analysis</h3>
+              <p>Extensive experience in low-current, low-voltage, and low-noise electrical measurement, SPICE and circuit modeling, and statistical model calibration using Monte Carlo simulation. These methods carry over to biopotential acquisition and to the analysis of intracranial EEG and other electrophysiological signals.</p>
+            </div>
+            <div class="row">
+              <h3>A personal stake</h3>
+              <p>My youngest daughter was born in 2023 with focal cortical dysplasia and has undergone four epilepsy surgeries, including a hemispherotomy. I&rsquo;ve dedicated the remainder of my career to doing everything I can to help children with drug-resistant epilepsy.</p>
+            </div>
           </div>
         </div>
         <picture class="about-photo-bottom">
           <source type="image/webp" srcset="/images/hospital-blurred.webp">
           <img src="/images/hospital-blurred.jpg" width="720" height="960" loading="lazy" decoding="async" alt="A father resting in a hospital bed with his young daughter asleep on his chest after her surgery; her face is softened for privacy">
         </picture>
+      </div>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Consulting inquiry">Inquire about consulting</a></p>
     </details>
   </section>
