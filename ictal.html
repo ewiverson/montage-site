@@ -85,31 +85,38 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
 
 
   main { max-width: 960px; margin: 0 auto; padding: 64px 20px 0; }
-  section.content { scroll-margin-top: 24px; }
-  section.content details { border-bottom: 1px solid var(--c-line); }
-  section.content:first-child details { border-top: 1px solid var(--c-line); }
+  section.content { scroll-margin-top: 24px; padding: 32px 0; border-bottom: 1px solid var(--c-line); }
+  section.content:first-child { border-top: 1px solid var(--c-line); }
 
-  summary {
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    padding: 28px 0; cursor: pointer; list-style: none;
-  }
-  summary::-webkit-details-marker { display: none; }
-  summary::after {
-    content: '+'; font-size: 22px; line-height: 1;
-    color: var(--c-muted); transition: color 0.3s;
-  }
-  details[open] summary::after { content: '\2212'; }
-  summary:hover::after, summary:hover h2 { color: var(--c-hover); }
-
-  a:focus-visible, button:focus-visible, summary:focus-visible {
+  a:focus-visible, button:focus-visible {
     outline: 2px solid var(--c-focus); outline-offset: 3px;
   }
 
   section.content h2 {
-    font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--c-muted); transition: color 0.3s;
+    font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.75rem); font-weight: 700; letter-spacing: -0.01em;
+    color: var(--strong); margin-bottom: 24px;
   }
   section.content h3 { font-size: 17px; font-weight: 500; line-height: 1.4; color: var(--strong); }
+
+  /* Sections open partially, to about the height of the portrait, with a fade and a
+     Read more button; JS skips the clip for sections already short enough to fit. */
+  .section-clip { position: relative; max-height: 338px; overflow: hidden; transition: max-height 0.4s ease; }
+  .section-fade {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 90px;
+    background: linear-gradient(to bottom, rgba(var(--bg-rgb), 0), var(--bg) 78%);
+    opacity: 1; transition: opacity 0.3s ease; pointer-events: none;
+  }
+  .section-body.is-open .section-fade { opacity: 0; }
+  .read-more {
+    display: block; margin: 20px auto 0; padding: 9px 26px;
+    font: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--strong); background: none; border: 1px solid var(--c-line); border-radius: 999px;
+    cursor: pointer; transition: border-color 0.3s, background-color 0.3s;
+  }
+  .read-more:hover { border-color: var(--c-focus); background: var(--c-line-soft); }
+  .section-body.is-open .read-more, .section-body.no-clip .read-more { display: none; }
+  .section-body.no-clip .section-clip { max-height: none; overflow: visible; }
+  .section-body.no-clip .section-fade { display: none; }
 
   .rows { padding-bottom: 0; }
   .row {
@@ -162,7 +169,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   }
 
   section.contact { padding-top: 72px; }
-  section.contact h2 { margin-bottom: 16px; }
+  section.contact h2 { margin-bottom: 20px; }
   section.contact p { max-width: 680px; }
   .contact-address { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin-top: 12px; }
   .contact .email-link { font-size: 1.15rem; overflow-wrap: anywhere; }
@@ -221,8 +228,9 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
 
 <main>
   <section class="content" id="about">
-    <details>
-      <summary><h2>About</h2></summary>
+    <h2>About</h2>
+    <div class="section-body">
+      <div class="section-clip">
       <div class="about-layout">
         <div class="about-photos">
           <picture>
@@ -257,12 +265,16 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
         </picture>
       </div>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Consulting inquiry">Inquire about consulting</a></p>
-    </details>
+        <div class="section-fade"></div>
+      </div>
+      <button type="button" class="read-more" aria-expanded="false">Read more</button>
+    </div>
   </section>
 
   <section class="content" id="services">
-    <details>
-      <summary><h2>Services</h2></summary>
+    <h2>Services</h2>
+    <div class="section-body">
+      <div class="section-clip">
         <div class="rows">
           <div class="row">
             <h3>Low-noise measurement system design for biopotential acquisition</h3>
@@ -290,29 +302,40 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
           </div>
         </div>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Technical requirements">Discuss your technical requirements</a></p>
-    </details>
+        <div class="section-fade"></div>
+      </div>
+      <button type="button" class="read-more" aria-expanded="false">Read more</button>
+    </div>
   </section>
 
   <section class="content" id="grant">
-    <details>
-      <summary><h2>Contributing to grant applications</h2></summary>
+    <h2>Contributing to grant applications</h2>
+    <div class="section-body">
+      <div class="section-clip">
       <div class="prose">
         <p>For applications with aims involving signal analysis, measurement system design, or data sharing, I offer a complimentary 30-minute scoping call. A rough aim, a description of the data, or a specific technical question is sufficient preparation. I will assess whether I can contribute and outline a proposed technical approach.</p>
         <p>Where there is a fit, I can define the scope of my contribution (tasks, level of effort, and deliverables), draft the corresponding methods and budget justification text, and provide a biosketch and supporting letter for the application.</p>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Free 30-minute scoping call">Request a free scoping call</a></p>
       </div>
-    </details>
+        <div class="section-fade"></div>
+      </div>
+      <button type="button" class="read-more" aria-expanded="false">Read more</button>
+    </div>
   </section>
 
   <section class="content" id="how-i-work">
-    <details>
-      <summary><h2>How I work</h2></summary>
+    <h2>How I work</h2>
+    <div class="section-body">
+      <div class="section-clip">
       <div class="prose">
         <p>Engagements are scoped in advance with defined milestones, deliverables, and acceptance criteria. Pricing is fixed-scope for well-defined projects and hourly or daily for open-ended work.</p>
         <p>Delivered code is open, documented, version-controlled, and owned by your laboratory.</p>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Project estimate request">Request a project estimate</a></p>
       </div>
-    </details>
+        <div class="section-fade"></div>
+      </div>
+      <button type="button" class="read-more" aria-expanded="false">Read more</button>
+    </div>
   </section>
 
   <!--
@@ -337,15 +360,19 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   -->
 
   <section class="content" id="talks">
-    <details>
-      <summary><h2>Caregiver perspective for development and research teams</h2></summary>
+    <h2>Caregiver perspective for development and research teams</h2>
+    <div class="section-body">
+      <div class="section-clip">
       <div class="prose">
         <p>I am the parent of a child with drug-resistant epilepsy and am available to meet with teams that rarely have direct contact with patients or caregivers. This includes engineering, data science, and modeling groups, device and diagnostic developers, translational researchers, and regulatory or commercial staff.</p>
         <p>I share what it was like to search for answers for our daughter, how each decision was actually made, and what has changed for her because of research and engineering like yours. Many teams never meet the children they are working for. Seeing that end goal can provide meaning and drive through the difficult stretches of work.</p>
         <p>I am a parent and an engineer, not a clinician. I speak only from our family&rsquo;s experience and do not provide medical advice.</p>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Speaking with our team">Invite me to speak with your team</a></p>
       </div>
-    </details>
+        <div class="section-fade"></div>
+      </div>
+      <button type="button" class="read-more" aria-expanded="false">Read more</button>
+    </div>
   </section>
 
   <section class="content contact" id="contact">
@@ -368,18 +395,41 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   <a class="email-link" href="#">Contact</a>
 </footer>
 <script>
-/* Open a section when its nav link is used */
+/* Sections peek by default; expand on button click or when navigated to directly.
+   A section with content shorter than the peek height skips the clip entirely. */
 (function () {
-  function openFor(id) {
-    var sec = id && document.getElementById(id);
-    var d = sec && sec.querySelector('details');
-    if (d) d.open = true;
+  function expand(body) {
+    var clip = body.querySelector('.section-clip');
+    if (!clip || body.classList.contains('is-open')) return;
+    clip.style.maxHeight = clip.scrollHeight + 'px';
+    body.classList.add('is-open');
+    var btn = body.querySelector('.read-more');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+    clip.addEventListener('transitionend', function onEnd(e) {
+      if (e.propertyName !== 'max-height') return;
+      clip.style.maxHeight = 'none';
+      clip.removeEventListener('transitionend', onEnd);
+    });
   }
-  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
-    a.addEventListener('click', function () { openFor(a.getAttribute('href').slice(1)); });
+  function expandFor(id) {
+    var sec = id && document.getElementById(id);
+    var body = sec && sec.querySelector('.section-body');
+    if (body) expand(body);
+  }
+
+  document.querySelectorAll('.section-body').forEach(function (body) {
+    var clip = body.querySelector('.section-clip');
+    var peek = parseFloat(getComputedStyle(clip).maxHeight);
+    if (clip.scrollHeight <= peek + 40) { body.classList.add('no-clip'); return; }
+    var btn = body.querySelector('.read-more');
+    btn.addEventListener('click', function () { expand(body); });
   });
-  window.addEventListener('hashchange', function () { openFor(location.hash.slice(1)); });
-  openFor(location.hash.slice(1));
+
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function () { expandFor(a.getAttribute('href').slice(1)); });
+  });
+  window.addEventListener('hashchange', function () { expandFor(location.hash.slice(1)); });
+  expandFor(location.hash.slice(1));
 })();
 /* Light/dark switch (light by default; choice is remembered) */
 (function () {
