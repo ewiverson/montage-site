@@ -218,14 +218,6 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
     font-size: 13px; color: var(--c-faint);
   }
 
-  .footer-switches { display: flex; flex-wrap: wrap; gap: 8px 24px; }
-  footer .theme-toggle {
-    font: inherit; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--c-muted); background: none; border: 0; padding: 0; cursor: pointer;
-    transition: color 0.3s;
-  }
-  footer .theme-toggle:hover { color: var(--c-hover); }
-
   #stats {
     position: absolute; bottom: 8px; left: 8px; z-index: 2;
     font-family: 'SF Mono', 'Consolas', monospace; font-size: 11px;
@@ -413,10 +405,6 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
 
 <footer data-nosnippet>
   <span>&copy; Montage Neuroscience</span>
-  <span class="footer-switches">
-    <button type="button" id="theme-toggle" class="theme-toggle">Dark mode</button>
-    <a href="/ictal.html">Alt: signal field</a>
-  </span>
   <a class="email-link" href="#">Contact</a>
 </footer>
 <script>
@@ -469,22 +457,10 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   window.addEventListener('hashchange', function () { expandFor(location.hash.slice(1)); });
   expandFor(location.hash.slice(1));
 })();
-/* Light/dark switch (light by default; choice is remembered) */
+/* Keep the browser tab color matching the active theme */
 (function () {
-  var root = document.documentElement, btn = document.getElementById('theme-toggle');
-  function sync() {
-    btn.textContent = root.dataset.theme === 'dark' ? 'Light mode' : 'Dark mode';
-    var m = document.querySelector('meta[name="theme-color"]');
-    if (m) m.content = getComputedStyle(root).getPropertyValue('--bg').trim();
-  }
-  sync();
-  btn.addEventListener('click', function () {
-    var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
-    try { localStorage.setItem('theme', next); } catch (e) {}
-    sync();
-    window.dispatchEvent(new Event('themechange'));
-  });
+  var m = document.querySelector('meta[name="theme-color"]');
+  if (m) m.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
 })();
 /* Keep the sticky header height available to CSS (scroll-padding-top) */
 (function () {
