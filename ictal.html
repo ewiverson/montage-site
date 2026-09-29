@@ -163,6 +163,9 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   .prose ul { margin-top: 16px; padding-left: 1.25em; }
   .prose li + li { margin-top: 8px; }
   .prose ul + p { margin-top: 16px; }
+  .prose h3 { margin-top: 32px; margin-bottom: 12px; }
+  .prose h3 + ul { margin-top: 0; }
+  .prose li strong { color: var(--strong); font-weight: 600; }
 
   /* Text-style email links at the end of each section */
   .section-cta { padding-bottom: 32px; }
@@ -296,7 +299,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
             <p>Development and validation of de-identification and database tools using synthetic data, so that no protected health information is accessed.</p>
           </div>
         </div>
-        <p class="section-cta"><a class="email-link" href="#" data-subject="Technical requirements">Discuss your technical requirements</a></p>
+        <p class="section-cta"><a class="email-link" href="#" data-subject="Technical requirements">Talk through your project</a></p>
         <div class="section-fade"></div>
       </div>
       <button type="button" class="read-more" aria-expanded="false">Read more</button>
@@ -308,8 +311,8 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
     <div class="section-body">
       <div class="section-clip">
       <div class="prose">
-        <p>For applications with aims involving signal analysis, measurement system design, or data sharing, I offer a complimentary 30-minute scoping call. A rough aim, a description of the data, or a specific technical question is sufficient preparation. I will assess whether I can contribute and outline a proposed technical approach.</p>
-        <p>Where there is a fit, I can define the scope of my contribution (tasks, level of effort, and deliverables), draft the corresponding methods and budget justification text, and provide a biosketch and supporting letter for the application.</p>
+        <p>Let&rsquo;s start with a free 30-minute call. A rough aim, a description of your data, or a specific technical question is plenty to get started, and feel free to bring anyone on your team who&rsquo;ll be working with the data. We&rsquo;ll talk through what you&rsquo;re trying to do and figure out together whether I&rsquo;m a good fit.</p>
+        <p>If I am, we&rsquo;ll work out the scope of my contribution, and I&rsquo;ll draft the methods and budget justification text, a biosketch, and a letter of support.</p>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Free 30-minute scoping call">Request a free scoping call</a></p>
       </div>
         <div class="section-fade"></div>
@@ -335,6 +338,13 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
         <p>While we work, I&rsquo;ll stay in close contact with your team, sharing progress and talking through questions as they come up. If I spot a problem with the data, the approach, or the fit, I&rsquo;ll bring it to you right away.</p>
         <p>When we wrap up, the code is yours, documented and owned by your lab. I&rsquo;ll walk your team through it so you can run and extend it on your own, and I&rsquo;ll ask how the engagement went for you.</p>
         <p>For pricing, I use a fixed scope for well-defined projects and an hourly or daily rate for open-ended work.</p>
+        <h3>A few things I&rsquo;m not the right fit for</h3>
+        <ul>
+          <li><strong>Promising specific results.</strong> Research doesn&rsquo;t come with guarantees, so what I can offer is rigor. If the data point somewhere unexpected, I&rsquo;ll tell you, and we&rsquo;ll figure out what they do show.</li>
+          <li><strong>Evaluating people.</strong> I understand the appeal of an outside view, but when I review a trainee&rsquo;s code or analysis, it&rsquo;s to improve the work rather than assess the person.</li>
+          <li><strong>Work outside my expertise.</strong> If you need something I&rsquo;m not the right person for, I&rsquo;ll say so and try to point you to someone who is.</li>
+          <li><strong>Being the only one who understands what I built.</strong> I&rsquo;d rather leave your team able to run and extend the work without me.</li>
+        </ul>
         <p class="section-cta"><a class="email-link" href="#" data-subject="Project estimate request">Start a conversation</a></p>
       </div>
         <div class="section-fade"></div>
@@ -369,10 +379,10 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
     <div class="section-body">
       <div class="section-clip">
       <div class="prose">
-        <p>I am the parent of a child with drug-resistant epilepsy and am available to meet with teams that rarely have direct contact with patients or caregivers. This includes engineering, data science, and modeling groups, device and diagnostic developers, translational researchers, and regulatory or commercial staff.</p>
-        <p>I share what it was like to search for answers for our daughter, how each decision was actually made, and what has changed for her because of research and engineering like yours. Many teams never meet the children they are working for. Seeing that end goal can provide meaning and drive through the difficult stretches of work.</p>
-        <p>I am a parent and an engineer, not a clinician. I speak only from our family&rsquo;s experience and do not provide medical advice.</p>
-        <p class="section-cta"><a class="email-link" href="#" data-subject="Speaking with our team">Invite me to speak with your team</a></p>
+        <p>I&rsquo;m the parent of a child with drug-resistant epilepsy, and I&rsquo;m happy to meet with teams that rarely get to talk with patients or caregivers: engineering, data science, and modeling groups; device and diagnostic developers; translational researchers; and regulatory or commercial staff.</p>
+        <p>I&rsquo;ll share what it was like to search for answers for our daughter, how each decision was actually made, and what has changed for her because of research and engineering like yours, and I&rsquo;ll leave plenty of time for your team&rsquo;s questions. Many teams never meet the children they&rsquo;re working for, and seeing that end goal can bring meaning and drive through the hard stretches of work.</p>
+        <p>I&rsquo;m a parent and an engineer, not a clinician, so I speak only from our family&rsquo;s experience and don&rsquo;t give medical advice.</p>
+        <p class="section-cta"><a class="email-link" href="#" data-subject="Speaking with our team">Invite me to talk with your team</a></p>
       </div>
         <div class="section-fade"></div>
       </div>
@@ -382,7 +392,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
 
   <section class="content contact" id="contact">
     <h2>Get in touch</h2>
-    <p>Planning a grant application, need help with data analysis, or interested in a session with your team? Please send an email. I typically reply within two business days.</p>
+    <p>Planning a grant application, working through a data problem, or interested in having me talk with your team? Send me an email. I usually reply within two business days.</p>
     <p class="contact-address" data-nosnippet>
       <a class="email-link" href="#" data-show-address>Email me</a>
       <button type="button" id="copy-email" class="linklike">Copy address</button>
