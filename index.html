@@ -104,9 +104,10 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   .subtitle {
     margin-top: 1.25rem;
     font-size: clamp(0.8rem, 0.5rem + 1.4vw, 1.25rem);
+    font-weight: 700;
     letter-spacing: 0.18em; text-transform: uppercase; text-align: center;
-    color: var(--c-muted);
-    text-shadow: 0 2px 16px rgba(var(--bg-rgb), 0.9);
+    color: var(--strong);
+    text-shadow: 0 0 6px rgba(var(--bg-rgb), 1), 0 0 14px rgba(var(--bg-rgb), 0.95), 0 0 28px rgba(var(--bg-rgb), 0.9);
   }
 
   #sim {
