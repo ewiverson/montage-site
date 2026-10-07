@@ -83,11 +83,14 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
 
   #hero { position: relative; }
   h1 span { display: block; }
-  h1 {
+  .hero-text {
     position: absolute; inset: 0; z-index: 1;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 0 20px;
     pointer-events: none;   /* let drags/taps reach the simulation underneath */
+  }
+  h1 {
+    display: flex; flex-direction: column; align-items: center;
     font-family: Impact, Haettenschweiler, Anton, 'Arial Narrow Bold', sans-serif;
     font-size: clamp(3rem, 14.5vw, 11rem);
     font-weight: 400;
@@ -97,6 +100,13 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
     text-align: center;
     color: var(--strong);
     text-shadow: 0 2px 24px rgba(var(--bg-rgb), 0.85);
+  }
+  .subtitle {
+    margin-top: 1.25rem;
+    font-size: clamp(0.8rem, 0.5rem + 1.4vw, 1.25rem);
+    letter-spacing: 0.18em; text-transform: uppercase; text-align: center;
+    color: var(--c-muted);
+    text-shadow: 0 2px 16px rgba(var(--bg-rgb), 0.9);
   }
 
   #sim {
@@ -243,7 +253,10 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
     <canvas id="canvas"></canvas>
     <div id="stats" data-nosnippet></div>
   </div>
-  <h1><span>Montage</span> <span>Neuroscience</span></h1>
+  <div class="hero-text">
+    <h1><span>Montage</span> <span>Neuroscience</span></h1>
+    <p class="subtitle">Signal acquisition, analysis, modeling</p>
+  </div>
 </div>
 
 <main>
