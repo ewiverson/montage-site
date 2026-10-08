@@ -103,8 +103,9 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   }
   .subtitle {
     margin-top: 1.25rem;
-    font-size: clamp(1.05rem, 0.65rem + 1.8vw, 1.7rem);
+    font-size: clamp(1.1rem, 0.7rem + 1.3vw, 1.4rem);
     font-weight: 700;
+    line-height: 1.25;
     letter-spacing: 0.18em; text-transform: uppercase; text-align: center;
     color: var(--strong);
     text-shadow: 0 0 4px rgba(255, 255, 255, 0.9), 0 0 10px rgba(255, 255, 255, 0.75), 0 0 20px rgba(255, 255, 255, 0.55);
@@ -130,7 +131,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
     font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.75rem); font-weight: 700; letter-spacing: -0.01em;
     color: var(--strong); margin-bottom: 24px;
   }
-  section.content h3 { font-size: 17px; font-weight: 500; line-height: 1.4; color: var(--strong); }
+  section.content h3 { font-size: 18px; font-weight: 600; line-height: 1.4; color: var(--strong); }
 
   /* Sections open partially, to about the height of the portrait, with a fade and a
      Read more button; JS skips the clip for sections already short enough to fit. */
@@ -202,7 +203,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   .section-cta { padding-bottom: 32px; }
   .prose .section-cta { margin-top: 24px; }
   .section-cta .email-link, .contact .email-link {
-    color: var(--strong); text-decoration: underline; text-underline-offset: 3px;
+    color: var(--strong); font-weight: 600; text-decoration: underline; text-underline-offset: 3px;
   }
 
   section.contact { padding-top: 72px; }
@@ -219,6 +220,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   #copy-note { min-height: 1.5em; font-size: 14px; color: var(--c-muted2); }
 
   @media (max-width: 700px) {
+    #sim { height: 46vh; min-height: 340px; }
     .row { grid-template-columns: minmax(0, 1fr); }
     .about-photos, .about-photo-bottom { max-width: 200px; margin: 0 auto; }
     .about-photos { margin-bottom: 24px; }
