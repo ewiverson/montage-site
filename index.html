@@ -12,6 +12,35 @@
 try { document.documentElement.dataset.theme = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'; }
 catch (e) { document.documentElement.dataset.theme = 'light'; }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Montage Neuroscience",
+  "url": "https://montageneuroscience.com/",
+  "email": "eric@montageneuroscience.com",
+  "description": "Low-noise measurement system design, EEG and SEEG time-series analysis, and statistical modeling for epilepsy and neuroscience research.",
+  "areaServed": "US",
+  "founder": {
+    "@type": "Person",
+    "name": "Eric W. Iverson",
+    "honorificSuffix": "PhD",
+    "jobTitle": "Founder and Principal Consultant",
+    "email": "eric@montageneuroscience.com",
+    "sameAs": ["https://www.linkedin.com/in/ericiverson"],
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "University of Illinois Urbana-Champaign"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Austin",
+      "addressRegion": "TX",
+      "addressCountry": "US"
+    }
+  }
+}
+</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
@@ -80,6 +109,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
     transition: color 0.3s;
   }
   header a:hover, footer a:hover { color: var(--c-hover); }
+  footer .footer-email { text-transform: none; letter-spacing: normal; }
 
   #hero { position: relative; }
   h1 span { display: block; }
@@ -209,6 +239,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   section.contact { padding-top: 72px; }
   section.contact h2 { margin-bottom: 20px; }
   section.contact p { max-width: 680px; }
+  .contact-plain { margin-top: 16px; }
   .contact-address { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin-top: 12px; }
   .contact .email-link { font-size: 1.15rem; overflow-wrap: anywhere; }
   .linklike {
@@ -217,6 +248,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
     text-underline-offset: 3px;
   }
   .linklike:hover { color: var(--strong); }
+  .services-note { max-width: 680px; margin-bottom: 24px; }
   #copy-note { min-height: 1.5em; font-size: 14px; color: var(--c-muted2); }
 
   @media (max-width: 700px) {
@@ -248,7 +280,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   <a href="#about">About</a>
   <a href="#services">Services</a>
   <a href="#how-i-work">How I work</a>
-  <a class="email-link" href="#">Contact</a>
+  <a href="#contact">Contact</a>
 </header>
 
 <div id="hero">
@@ -278,16 +310,16 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
           <p class="about-intro">Hi, I&rsquo;m Eric Iverson, an electrical engineer whose life was changed forever by his daughter&rsquo;s drug-resistant epilepsy. Now I dedicate my work to helping engineers and researchers who are working to build a better future for families like mine.</p>
           <div class="rows">
             <div class="row">
-              <h3>PhD in Electrical and Computer Engineering</h3>
+              <h3>PhD in Electrical Engineering</h3>
               <p>With more than a decade of research and development in the semiconductor industry</p>
             </div>
             <div class="row">
-              <h3>Translational research experience</h3>
-              <p>Taking research concepts to volume production through experimental design, electrical testing, data analysis, and computational modeling</p>
+              <h3>Technology development to production</h3>
+              <p>Taking research concepts to volume production through test chip design, experimental design, electrical testing, data analysis, and computational modeling</p>
             </div>
             <div class="row">
               <h3>Electrical characterization and noise analysis</h3>
-              <p>I&rsquo;ve done low-current, low-voltage, and low-noise electrical device characterization and modeling for more than 15 years in both academic and corporate research labs. These methods carry over to biopotential acquisition and to the analysis of intracranial EEG and other electrophysiological signals.</p>
+              <p>I&rsquo;ve done low-current, low-voltage, and low-noise electrical device characterization and modeling for more than 15 years in both academic and corporate research labs. I design measurement plans, detect and remove artifacts like interference and drift, and fit statistical models to large datasets. These methods carry over to biopotential acquisition and to the analysis of intracranial EEG and other electrophysiological signals.</p>
             </div>
             <div class="row">
               <h3>A personal stake</h3>
@@ -300,7 +332,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
           <img src="/images/hospital-blurred.jpg" width="720" height="960" loading="lazy" decoding="async" alt="A father resting in a hospital bed with his young daughter asleep on his chest after her surgery; her face is softened for privacy">
         </picture>
       </div>
-        <p class="section-cta"><a class="email-link" href="#" data-subject="Consulting inquiry">Inquire about consulting</a></p>
+        <p class="section-cta"><a class="email-link" href="mailto:eric@montageneuroscience.com?subject=Consulting%20inquiry">Inquire about consulting</a></p>
         <div class="section-fade"></div>
       </div>
       <button type="button" class="read-more" aria-expanded="false">Read more</button>
@@ -318,26 +350,19 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
           </div>
           <div class="row">
             <h3>Statistical and simulation modeling</h3>
-            <p>Statistical model calibration, Monte Carlo simulation, power analysis, and parameter estimation from measured data.</p>
+            <p>Statistical model calibration, Monte Carlo simulation, rare-event (tail) statistics, and parameter estimation from measured data.</p>
           </div>
           <div class="row">
             <h3>Low-noise measurement system design and troubleshooting for biopotential acquisition</h3>
-            <p>Scoping of signal-chain architecture, electrode and amplifier selection, input-referred noise budgeting, and calibration strategy, to meet requirements for noise floor and dynamic range before hardware is committed. I also troubleshoot noise, drift, and other performance problems in acquisition systems you already have running.</p>
+            <p>Scoping of signal-chain architecture, electrode and amplifier selection, input-referred noise budgeting, and calibration strategy, to meet requirements for noise floor and dynamic range before hardware is committed. I also troubleshoot noise, drift, and other performance problems in acquisition systems you already have running. My measurement background is in semiconductor devices, including test chips with on-chip measurement circuits, and I now apply it to biopotential systems.</p>
           </div>
           <div class="row">
-            <h3>Data standardization and sharing preparation</h3>
-            <p>BIDS (including iEEG-BIDS) and NWB conversion, metadata annotation, validation, and preparation of archive-ready datasets in support of NIH data management and sharing requirements.</p>
-          </div>
-          <div class="row">
-            <h3>Research software and reproducibility</h3>
-            <p>Refactoring of laboratory analysis code into tested, documented Python packages, with version control, automated testing, and containerized environments.</p>
-          </div>
-          <div class="row">
-            <h3>De-identification and database tooling</h3>
-            <p>Development and validation of de-identification and database tools using synthetic data, so that no protected health information is accessed.</p>
+            <h3>Research software and data management</h3>
+            <p>I write Python analysis code and data pipelines, and I&rsquo;m developing tools for loading and exploring BIDS datasets. I can help convert data to BIDS (including iEEG-BIDS) or NWB, prepare datasets for NIH data management and sharing plans, turn laboratory analysis code into documented, tested Python packages, and build database and de-identification tools that are developed and validated on synthetic data, so that no protected health information is accessed.</p>
           </div>
         </div>
-        <p class="section-cta"><a class="email-link" href="#" data-subject="Technical requirements">Talk through your project</a></p>
+        <p class="services-note">I also take contract work directly with device, diagnostics, and other neurotechnology companies, under NDA.</p>
+        <p class="section-cta"><a class="email-link" href="mailto:eric@montageneuroscience.com?subject=Technical%20requirements">Talk through your project</a></p>
         <div class="section-fade"></div>
       </div>
       <button type="button" class="read-more" aria-expanded="false">Read more</button>
@@ -351,7 +376,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
       <div class="prose">
         <p>A free 30-minute call is the best way to find out whether I can help. Bring a rough aim, a description of your data, or a specific technical question &mdash; that&rsquo;s plenty to get started, and feel free to include anyone on your team who&rsquo;ll be working with the data. We&rsquo;ll talk through what you&rsquo;re trying to do and figure out together whether I&rsquo;m a good fit.</p>
         <p>If I am, we&rsquo;ll work out the scope of my contribution, and I&rsquo;ll draft the methods and budget justification text, a biosketch, and a letter of support.</p>
-        <p class="section-cta"><a class="email-link" href="#" data-subject="Free 30-minute scoping call">Request a free scoping call</a></p>
+        <p class="section-cta"><a class="email-link" href="mailto:eric@montageneuroscience.com?subject=Free%2030-minute%20scoping%20call">Request a free scoping call</a></p>
       </div>
         <div class="section-fade"></div>
       </div>
@@ -376,7 +401,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
         <p>While we work, I&rsquo;ll stay in close contact with your team, sharing progress and talking through questions as they come up. If I spot a problem with the data, the approach, or the fit, I&rsquo;ll bring it to you right away. You&rsquo;ll get my honest read, and then we&rsquo;ll decide together how to move forward.</p>
         <p>When we wrap up, the code is yours, documented and owned by your lab. I&rsquo;ll walk your team through it so you can run and extend it on your own, and I&rsquo;ll ask how the engagement went for you.</p>
         <p>For pricing, I use a fixed scope for well-defined projects and an hourly or daily rate for open-ended work.</p>
-        <p class="section-cta"><a class="email-link" href="#" data-subject="Project estimate request">Start a conversation</a></p>
+        <p class="section-cta"><a class="email-link" href="mailto:eric@montageneuroscience.com?subject=Project%20estimate%20request">Start a conversation</a></p>
       </div>
         <div class="section-fade"></div>
       </div>
@@ -413,7 +438,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
         <p>I&rsquo;m the parent of a child with drug-resistant epilepsy, and I&rsquo;m happy to meet with teams that rarely get to talk with patients or caregivers: engineering, data science, and modeling groups; device and diagnostic developers; translational researchers; and regulatory or commercial staff.</p>
         <p>I&rsquo;ll share what it was like to search for answers for our daughter, how each decision was actually made, and what has changed for her because of research and engineering like yours, and I&rsquo;ll leave plenty of time for your team&rsquo;s questions. Many teams never meet the children they&rsquo;re working for, and seeing that end goal can bring meaning and drive through the hard stretches of work.</p>
         <p>I&rsquo;m a parent and an engineer, not a clinician, so I speak only from our family&rsquo;s experience and don&rsquo;t give medical advice.</p>
-        <p class="section-cta"><a class="email-link" href="#" data-subject="Speaking with our team">Invite me to talk with your team</a></p>
+        <p class="section-cta"><a class="email-link" href="mailto:eric@montageneuroscience.com?subject=Speaking%20with%20our%20team">Invite me to talk with your team</a></p>
       </div>
         <div class="section-fade"></div>
       </div>
@@ -424,8 +449,10 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   <section class="content contact" id="contact">
     <h2>Get in touch</h2>
     <p>Planning a grant application, working through a data problem, or interested in having me talk with your team? Send me an email. I usually reply within two business days.</p>
+    <p class="contact-plain">Email: <a href="mailto:eric@montageneuroscience.com">eric@montageneuroscience.com</a></p>
+    <p>LinkedIn: <a href="https://www.linkedin.com/in/ericiverson">linkedin.com/in/ericiverson</a></p>
     <p class="contact-address" data-nosnippet>
-      <a class="email-link" href="#" data-show-address>Email me</a>
+      <a class="email-link" href="mailto:eric@montageneuroscience.com">Email me</a>
       <button type="button" id="copy-email" class="linklike">Copy address</button>
     </p>
     <p id="copy-note" role="status" aria-live="polite"></p>
@@ -434,7 +461,8 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
 
 <footer data-nosnippet>
   <span>&copy; Montage Neuroscience</span>
-  <a class="email-link" href="#">Contact</a>
+  <a class="footer-email" href="mailto:eric@montageneuroscience.com">eric@montageneuroscience.com</a>
+  <a href="https://www.linkedin.com/in/ericiverson">LinkedIn</a>
 </footer>
 <script>
 /* Size MONTAGE so it is a little narrower than NEUROSCIENCE, whatever the font */
@@ -499,28 +527,9 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
   window.addEventListener('load', set);
   window.addEventListener('resize', set);
 })();
-/* Email: the address is stored encoded and decoded only when a link is used
-   (links that display the address are filled in right away). */
+/* Copy the email address to the clipboard */
 (function () {
-  var addr = null;
-  function address() {
-    if (addr === null) addr = atob('ZXJpY0Btb250YWdlbmV1cm9zY2llbmNlLmNvbQ==');
-    return addr;
-  }
-  function arm(a) {
-    var subject = a.getAttribute('data-subject');
-    a.href = 'mailto:' + address() + (subject ? '?subject=' + encodeURIComponent(subject) : '');
-    if (a.hasAttribute('data-show-address')) a.textContent = address();
-  }
-  function armFrom(e) {
-    var a = e.target.closest && e.target.closest('a.email-link');
-    if (a) arm(a);
-  }
-  ['pointerover', 'focusin', 'touchstart', 'click', 'auxclick', 'contextmenu'].forEach(function (t) {
-    document.addEventListener(t, armFrom, true);
-  });
-  document.querySelectorAll('a.email-link[data-show-address]').forEach(arm);
-
+  var ADDRESS = 'eric@montageneuroscience.com';
   var copy = document.getElementById('copy-email');
   var note = document.getElementById('copy-note');
   var noteTimer;
@@ -543,7 +552,7 @@ catch (e) { document.documentElement.dataset.theme = 'light'; }
     return ok;
   }
   copy.addEventListener('click', function () {
-    var text = address();
+    var text = ADDRESS;
     var fail = 'Could not copy. Please select the address above.';
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
